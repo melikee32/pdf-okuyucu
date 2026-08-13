@@ -21,24 +21,56 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
     $pdf = $parser->parseFile(
         storage_path('app/private/' . $yol)
     );                                         // Kaydettiğimiz PDF'yi okuyoruz.
-     
-    $metin = $pdf->getText();
+
+    $text = $pdf->getText();
+
+    $chunks = [];
+    //$chunklar = str_split($metin, 1000);
+    // dd($chunklar); test amaçlı idi.
+    $chunkSize = 1000;
+    $overlapSize = 200;
+
+    $startPosition = 0;
+    $textLength = strlen($text);
+
+    while ($startPosition < $textLength) {
+
+        $chunk = substr($text, $startPosition, $chunkSize);
+        
+        // Prevent splitting words in the middle //* kelimenin ortasından bölmek
+        if ($startPosition + $chunkSize < $textLength) {
+
+            $lastSpacePosition = strrpos($chunk, ' ');
+
+            if ($lastSpacePosition !== false) {
+                $chunk = substr($chunk, 0, $lastSpacePosition);
+            }
+        }
+
+        $chunks[] = trim($chunk);
+
+        $startPosition += ($chunkSize - $overlapSize);
+    }
+
 
     session([
+
         'pdf_adi' => $dosya->getClientOriginalName(),
-        'pdf_metni' => $metin
+        'pdf_metni' => $text,
+        'pdf_chunklar' => $chunks
+
     ]);
 
-    return redirect(('/'));
 
+    return redirect(('/'));
 });
 
 
 
 //* SOR butonuna basınca Laravel bunu alacak:
 //* Kullanıcının sorusu >Laravel>session'daki PDF metni>Daha sonra LLM
-Route::post('/soru', function(Illuminate\Http\Request $request) {
-    
+Route::post('/soru', function (Illuminate\Http\Request $request) {
+
     $request->validate([
         'soru' => 'required',
     ]);
@@ -50,7 +82,6 @@ Route::post('/soru', function(Illuminate\Http\Request $request) {
     $cevap = "Sorunuz: " . $soru;
 
     return redirect('/')->with('cevap', $cevap);
-
 });
 
 Route::get('/soru', function () {
@@ -68,5 +99,4 @@ Route::get('/yeni-pdf', function () {
     ]);
 
     return redirect('/');
-
 });
