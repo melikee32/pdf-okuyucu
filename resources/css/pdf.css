@@ -1,0 +1,200 @@
+/*her şeyi sıfırlıyor*/
+/*Kısaca: Sayfanın varsayılan boşluklarını temizler.*/
+* {
+
+    box-sizing: border-box;   /*h-w hesabı daha  iyi olur.*/
+    margin: 0;                /*dış  boşluk*/
+    padding: 0;               /*iç boşluk*/
+
+}
+
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;  /*yazı tipi*/
+    background-color: #e2e3e7;                /*arla plan*/
+    min-height: 100vh;                          /*sayfa en az ekran h kadar olmasını sağlar*/
+    padding: 40px;                              /*sayfa kenarından boşluk*/
+
+}
+
+/*Kısaca: İçeriği ortalar ve çok fazla genişlemesini engeller.*/
+.container {
+
+    max-width: 900px;
+    margin: auto;
+
+}
+
+.header{
+    text-align: center;      /*yazıları ortalar*/
+    margin-bottom: 35px;     /*altına 35px boşluk bırakır*/
+}
+
+.header h1{
+
+    font-size: medium;
+    margin-bottom: 10px;
+
+}
+
+.header p {
+    color: #666;
+}
+
+.card {
+
+    background: #f4f5f6;
+    border-radius: 15px;      /*köşeleri yuvarlar*/
+    padding: 30px;            /*içeriğin kenara yapışmasını önler*/
+    margin-bottom: 25px;      /*kartların arasına boşluk koyar*/
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+
+}
+
+.upload-text{
+    color: #047857;
+    font-weight: bold;
+    font-style: italic;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    line-height: 2;
+}
+
+
+.upload-area {
+    border: 2px dashed #bbb;   /*kesikli çizgili kenarlık*/
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;          /*içeriği ortalar*/
+}
+
+
+.upload-area p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+input[type="file"] {
+    margin-bottom: 20px;
+}
+
+button {
+    border: none;         /*kenarlığı kaldır*/
+    padding: 12px 25px;   /*butonu büyüt*/
+    border-radius: 8px;   /*köşeleri yuvarlar*/
+    cursor: pointer;      /*üzerine gelince fare işareti değişir*/
+    font-size: 15px;
+}
+
+.upload-button { 
+    background: #047857;
+    color: white;
+    font-weight: 600;
+}
+
+.upload-button:hover {
+    opacity: 0.9;
+}
+
+.upload-message {
+    margin-top: 10px;
+    font-weight: 6500;
+    min-height: 20px;
+}
+
+/* İlk açılıştaki normal buton */
+
+.upload-button {
+    background: #6b7280;
+    color: white;
+    font-weight: 600;
+}
+
+
+/* PDF seçildiğinde */
+
+.upload-button.ready {
+    background: #047857;
+    color: white;
+}
+
+
+/* PDF seçilmediğinde hata */
+
+.upload-button.error {
+    background: #dc2626;
+    color: white;
+}
+
+
+/* Başarı mesajı */
+
+.upload-message.success {
+    color: #047857;
+}
+
+
+/* Hata mesajı */
+
+.upload-message.error {
+    color: #dc2626;
+}
+
+.pdf-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #eef0f2;
+    border-radius: 10px;
+    padding: 15px 18px;
+    margin-top: 20px;
+}
+
+.pdf-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.clear-pdf {
+    color: #dc2626;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.clear-pdf:hover {
+    text-decoration: underline;
+}
+
+
+.question-area textarea {
+    width: 100%;              /*kartın tamamını kaplar*/
+    min-height: 120px;        /*en az 120 px h*/
+    resize: vertical;         /*user sadece yukarı aşağı arttırabilir*/
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    margin: 15px 0;           /*üst alt boşluk*/
+}
+
+
+.question-button {
+    background: #222;
+    color: white;
+}
+
+.pdf-name {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+.answer {
+    background: #f7f7f7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;       /*üst boşluk*/
+    line-height: 1.6;
+}
