@@ -2,9 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::get('/', function () {
     return view('pdf');
 });
+
+
 
 Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
@@ -36,7 +40,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
     while ($startPosition < $textLength) {
 
         $chunk = substr($text, $startPosition, $chunkSize);
-        
+
         // Prevent splitting words in the middle //* kelimenin ortasından bölmek
         if ($startPosition + $chunkSize < $textLength) {
 
@@ -51,6 +55,15 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
         $startPosition += ($chunkSize - $overlapSize);
     }
+
+    // $firstChunk = $chunks[0];
+    // $response = Http::post('http://localhost:11434/api/embed', [
+    //     'model' => 'nomic-embed-text',
+    //     'input' => $firstChunk,
+    // ]);
+
+    // dd($response->json());
+
 
 
     session([
@@ -79,10 +92,36 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
 
     $pdfMetni = session('pdf_metni');
 
-    $cevap = "Sorunuz: " . $soru;
+    $response = Http::timeout(120)->post(
+        'http://localhost:11434/api/generate',
+        [
+            'model' => 'llama3:latest',
+            'prompt' => "Aşağıdaki PDF içeriğine göre soruyu cevapla.
+
+PDF İÇERİĞİ:
+{$pdfMetni}
+
+SORU:
+{$soru}
+
+Cevabı yalnızca PDF içeriğine dayanarak ver.",
+            'stream' => false,
+        ]
+    );
+
+    if ($response->failed()) {
+        return redirect('/')->with(
+            'cevap',
+            'AI servisine bağlanırken bir hata oluştu.'
+        );
+    }
+
+    $cevap = $response->json('response');
 
     return redirect('/')->with('cevap', $cevap);
 });
+
+
 
 Route::get('/soru', function () {
     return redirect('/');

@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+    ],
+
+    'weaviate' => [
+        'host' => env('WEAVIATE_HOST'),
+        'grpc_host' => env('WEAVIATE_GRPC_HOST'),
+        'grpc_port' => env('WEAVIATE_GRPC_PORT'),
+    ],
+
+    'ollama' => [
+        'host' => env('OLLAMA_HOST'),
+        'embedding_model' => env('OLLAMA_EMBEDDING_MODEL'),
+        'llm_model' => env('OLLAMA_LLM_MODEL'),
+    ],
+
 ];

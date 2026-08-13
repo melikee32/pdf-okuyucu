@@ -46,9 +46,9 @@ body {
 
     background: #f4f5f6;
     border-radius: 15px;      /*köşeleri yuvarlar*/
-    padding: 30px;            /*içeriğin kenara yapışmasını önler*/
-    margin-bottom: 25px;      /*kartların arasına boşluk koyar*/
-    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    padding: 20px;            /*içeriğin kenara yapışmasını önler*/
+    margin-bottom: 20px;      /*kartların arasına boşluk koyar*/
+    box-shadow: 0 50px 20px rgba(0,0,0,0.06);
 
 }
 
