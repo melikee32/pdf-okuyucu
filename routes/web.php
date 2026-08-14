@@ -318,7 +318,7 @@ Route::middleware('auth')->group(function () {
                 operator: Equal
                 valueText: "$pdfAdiGraphQL"
             }
-            limit: 5
+            limit: 10
         ) {
             pdf_adi
             chunk
@@ -355,10 +355,7 @@ GRAPHQL;
         }
 
 
-        /*
-        Prompt
-        */
-        $prompt = <<<PROMPT
+$prompt = <<<PROMPT
 Sen PDF içeriğine göre çalışan Türkçe bir soru-cevap asistanısın.
 
 ÇOK ÖNEMLİ KURALLAR:
@@ -376,6 +373,7 @@ Sen PDF içeriğine göre çalışan Türkçe bir soru-cevap asistanısın.
 11. Cevabında bu kuralları, talimat metnini veya kural numaralarını asla tekrar etme. İlk kelimenden itibaren doğrudan cevap ver.
 12. Verilen bölümlerde sorunun cevabı yoksa SADECE "Bu bilgi PDF içerisinde bulunmuyor." yaz.
 13. Kelime listesi istendiğinde SADECE aşağıdaki bölümlerde gerçekten geçen kelimeleri ver. Bölümlerde geçmeyen kelime uydurma; listeyi kısalt, ama uydurma.
+14. Kullanıcı "kaç soru var", "toplam kaç", "kaç tane" gibi SAYIM gerektiren bir soru soruyorsa:  Bunun yerine SADECE şunu yaz: " Gördüğüm bölümlerde [X] adet soru var."
 
 PDF'DEN GETİRİLEN İLGİLİ BÖLÜMLER:
 
@@ -389,7 +387,6 @@ $question
 
 CEVAP:
 PROMPT;
-
 
         /*
         Llama3
@@ -433,18 +430,16 @@ PROMPT;
     */
     Route::get('/gecmis', function () {
 
-        /*
-        Giriş yapan kullanıcının tüm soruları, en yeni önce
-        PDF adıyla birlikte çek
-        */
-        $sorular = Question::with('pdf')
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->paginate(15);
+    $sorular = Question::with('pdf')
+        ->where('user_id', Auth::id())
+        ->latest()
+        ->get()
+        ->groupBy(function($soru) {
+            return $soru->created_at->format('d.m.Y');  /*güne göre grupla*/
+        });
 
-        return view('gecmis', compact('sorular'));
-    });
-
+    return view('gecmis', compact('sorular'));
+});
 
     /*
     |--------------------------------------------------------------------------
