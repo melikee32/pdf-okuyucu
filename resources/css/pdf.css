@@ -8,30 +8,22 @@
 }
 
 /* ============================================================
-   GLOBAL
+   GLOBAL: koyu arka plan + blur için zemin
    ============================================================ */
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     min-height: 100vh;
-
-    background: linear-gradient(
-        135deg,
-        #E8CACA,
-        #C5D2DC,
-        #DEC9DA
-    );
-
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); /*koyu mor degrade arka plan*/
     background-attachment: fixed;
     padding: 30px 20px;
-
-    color: #374151;
+    color: #f0f0f0;
 }
 
 /* ============================================================
    CONTAINER
    ============================================================ */
 .container {
-    max-width: 850px;
+    max-width: 1000px;
     margin: auto;
 }
 
@@ -41,170 +33,136 @@ body {
 .header {
     text-align: center;
     margin-bottom: 24px;
-    margin-top:0%;
 }
 
 .header h1 {
-    font-size: 1.8rem;
-    font-weight: 650;
-    color: #2F3542;
-    letter-spacing: 0.9px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
     margin-bottom: 6px;
 }
 
 .header p {
-    color: #667085;
-    font-size: 1rem;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.9rem;
 }
 
 /* ============================================================
-   AKTİF DOKÜMAN BARI
+   AKTİF DOKÜMAN BARI (üstte ince şerit)
    ============================================================ */
 .active-doc-bar {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20Px;
-
-    background: rgba(255, 255, 255, 0.38);
-    border: 1px solid rgba(255, 255, 255, 0.55);
-
+    gap: 12px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-
-    border-radius: 80px;
-    padding: 8px 10px;
-
-    margin-bottom: 8px;
+    border-radius: 50px;          /*hap şeklinde*/
+    padding: 10px 22px;
+    margin-bottom: 28px;
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
-
-    box-shadow: 0 4px 15px rgba(71, 71, 138, 0.06);
 }
 
 .active-doc-bar .dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-
-    background: #34A66F;
-    box-shadow: 0 0 6px rgba(52, 166, 111, 0.45);
-
+    background: #4ade80;          /*yeşil aktif noktası*/
+    box-shadow: 0 0 6px #4ade80;
     flex-shrink: 0;
 }
 
 .active-doc-bar span {
     font-size: 0.875rem;
-    color: #4B5563;
+    color: rgba(255,255,255,0.85);
     font-weight: 500;
 }
 
 .active-doc-bar a {
-    color: #6B7280;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.8rem;
     text-decoration: none;
-
-    border: 2px solid rgba(107, 114, 128, 0.25);
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 20px;
-
-    padding: 2px 10px;
+    padding: 3px 12px;
     transition: all 0.2s;
 }
 
 .active-doc-bar a:hover {
-    background: rgba(255, 255, 255, 0.45);
-    color: #374151;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
 }
 
 /* ============================================================
    FLASH MESAJLARI
    ============================================================ */
 .alert-info {
-    border-left: 5px solid #5B8DEF;
-
-    background: rgba(91, 141, 239, 0.10);
-
+    border-left: 3px solid #60a5fa;
+    background: rgba(96,165,250,0.1);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
     border-radius: 12px;
     padding: 14px 18px;
-
     margin-bottom: 20px;
-
     font-size: 0.9rem;
-    color: #405A85;
+    color: #bfdbfe;
 }
 
 .alert-error {
-    border-left: 3px solid #E56B6F;
-
-    background: rgba(229, 107, 111, 0.10);
-
+    border-left: 3px solid #f87171;
+    background: rgba(248,113,113,0.1);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
     border-radius: 12px;
     padding: 14px 18px;
-
     margin-bottom: 20px;
-
     font-size: 0.9rem;
-    color: #8A4548;
+    color: #fecaca;
 }
 
 /* ============================================================
-   GLASS CARD
+   GLASS CARD (temel cam kartı)
    ============================================================ */
 .card {
-    background: rgba(255, 255, 255, 0.34);
-
-    border: 2px solid rgba(255, 255, 255, 0.55);
-
-    backdrop-filter: blur(18px);
+    background: rgba(255,255,255,0.07);  /*yarı şeffaf beyaz*/
+    border: 1px solid rgba(255,255,255,0.13);
+    backdrop-filter: blur(18px);          /*arkasını bulanıklaştır — cam efekti*/
     -webkit-backdrop-filter: blur(18px);
-
     border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 15px;
-
-    color: #374151;
-
-    box-shadow: 0 8px 25px rgba(70, 70, 90, 0.06);
+    padding: 28px;
+    margin-bottom: 20px;
+    color: #f0f0f0;
 }
 
 /* ============================================================
    PDF YÜKLEME KARTI
    ============================================================ */
 .upload-area {
-    border: 2px dashed rgba(255, 255, 255, 0.65);
-
+    border: 2px dashed rgba(255,255,255,0.2);  /*kesikli cam kenarlık*/
     border-radius: 14px;
-    padding: 20px 50px;
-
+    padding: 50px 40px;
     text-align: center;
 }
 
 .upload-area h2 {
     font-size: 1.2rem;
     font-weight: 600;
-
-    color: #3F4654;
+    margin-bottom: 10px;
+    color: #fff;
 }
 
 .upload-area p {
-    color: #667085;
-
-    margin-bottom: 20px;
-    font-size: 1rem;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 24px;
+    font-size: 0.9rem;
 }
 
 input[type="file"] {
-    margin-bottom: 10px;
-
-    color: #4B5563;
-
-    font-size: 1rem;
+    margin-bottom: 20px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.875rem;
 }
 
 /* ============================================================
@@ -212,153 +170,162 @@ input[type="file"] {
    ============================================================ */
 button {
     border: none;
-
-    padding: 10px 10px;
-
+    padding: 12px 28px;
     border-radius: 10px;
-
     cursor: pointer;
-
     font-size: 0.9rem;
     font-weight: 600;
-
+    transition: all 0.2s;
 }
 
-/* İlk açılışta */
+/* İlk açılışta gri */
 .upload-button {
-    background: linear-gradient(
-        135deg,
-        #8B7180,
-        #687F96
-    );
-
-    color: #FFFFFF;
-
-    border: 1px solid rgba(255, 255, 255, 0.35);
-
-    box-shadow: 0 4px 12px rgba(80, 90, 110, 0.15);
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 /* PDF seçilince yeşil */
 .upload-button.ready {
     background: #059669;
-    color: #FFFFFF;
+    color: #fff;
     border: none;
 }
 
 /* Hata durumunda kırmızı */
 .upload-button.error {
-    background: #DC2626;
-    color: #FFFFFF;
+    background: #dc2626;
+    color: #fff;
     border: none;
 }
 
 .upload-button:hover {
-    opacity: 0.88;
-    transform: translatex(-3px);
+    opacity: 0.85;
 }
 
 .upload-message {
-
     margin-top: 12px;
-
+    font-size: 0.875rem;
+    min-height: 20px;
 }
 
-.upload-message.success {
-    color: #16845B;
-}
-
-.upload-message.error {
-    color: #C24145;
-}
+.upload-message.success { color: #4ade80; }
+.upload-message.error   { color: #f87171; }
 
 /* ============================================================
-   LAYOUT
+   LAYOUT: PDF yüklendikten sonra 2 kolon
    ============================================================ */
 .pdf-layout {
     display: grid;
+    grid-template-columns: 260px 1fr;  /*sol sabit sidebar, sağ esnek*/
     gap: 20px;
+    align-items: start;
 }
 
+/* ============================================================
+   SOL SIDEBAR: Aktif PDF
+   ============================================================ */
+.pdf-sidebar h2 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 16px;
+}
 
+.pdf-file {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pdf-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.upload-text {
+    color: #a5f3c0;              /*açık yeşil — aktif dosya adı*/
+    font-weight: 600;
+    font-size: 0.875rem;
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+.clear-pdf {
+    display: inline-block;
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 4px 14px;
+    transition: all 0.2s;
+    width: fit-content;
+}
+
+.clear-pdf:hover {
+    color: #f87171;
+    border-color: #f87171;
+    background: rgba(248,113,113,0.08);
+}
+
+/* ============================================================
+   SAĞ ANA ALAN
+   ============================================================ */
+.pdf-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
 /* ============================================================
    SORU SORMA ALANI
    ============================================================ */
 .question-area h2 {
-    /* font-size: 0.95rem;
-
-    font-weight: 600; */
-
-    color: #3F4654;
-
-    /* margin-bottom: 14px; */
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 14px;
 }
 
 .question-area textarea {
     width: 100%;
-
     min-height: 100px;
-
     resize: vertical;
-
     padding: 14px 16px;
-
-    background: rgba(255, 255, 255, 0.32);
-
-    border: 1px solid rgba(255, 255, 255, 0.60);
-
+    background: rgba(255,255,255,0.06);   /*cam textarea*/
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 12px;
-
-    font-size: 1rem;
-
-    color: #374151;
-
-    margin-bottom: 10px;
-
+    font-size: 0.9rem;
+    color: #f0f0f0;
+    margin-bottom: 14px;
     outline: none;
-
-    transition: all 0.2s;
+    transition: border 0.2s;
 }
 
 .question-area textarea::placeholder {
-    color: #93979f;
+    color: rgba(255,255,255,0.25);
 }
 
 .question-area textarea:focus {
-    border-color: rgba(104, 127, 150, 0.55);
-
-    background: rgba(255, 255, 255, 0.45);
-
-    box-shadow: 0 0 0 3px rgba(104, 127, 150, 0.08);
+    border-color: rgba(255,255,255,0.35);
 }
 
-/* Soru gönder butonu */
 .question-button {
-    background: linear-gradient(
-        135deg,
-        #8B7180,
-        #687F96
-    );
-
-    color: #FFFFFF;
-
-    border: 2px solid rgba(255, 255, 255, 0.35);
-
-    padding: 10px 30px;
-
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 26px;
     border-radius: 10px;
-
-    /* font-size: 0.875rem; */
-
-    box-shadow: 10px 10px 10px rgba(80, 90, 110, 0.12);
+    font-size: 0.875rem;
 }
 
 .question-button:hover {
-    opacity: 0.7;
-
-    transform: translateX(3px);
-
+    background: rgba(255,255,255,0.2);
 }
 
 /* ============================================================
@@ -366,72 +333,32 @@ button {
    ============================================================ */
 .card h2 {
     font-size: 0.95rem;
-
     font-weight: 600;
-
-    color: #3F4654;
-
+    color: rgba(255,255,255,0.75);
     margin-bottom: 16px;
 }
 
 .question-box {
-    background: rgba(255, 255, 255, 0.28);
-
-    border-left: 3px solid rgba(104, 127, 150, 0.45);
-
+    background: rgba(255,255,255,0.05);
+    border-left: 3px solid rgba(255,255,255,0.2);
     padding: 12px 16px;
-
     border-radius: 10px;
-
     margin-bottom: 16px;
-
     font-size: 0.875rem;
 }
 
 .question-box strong {
     display: block;
-
     margin-bottom: 5px;
-
-    color: #7A8494;
-
+    color: rgba(255,255,255,0.45);
     font-size: 0.8rem;
-
     text-transform: uppercase;
-
     letter-spacing: 0.5px;
 }
 
 .question-box p {
     margin: 0;
-
-    color: #4B5563;
-}
-
-.answer-box {
-    background: rgba(255, 255, 255, 0.25);
-
-    border-radius: 10px;
-
-    padding: 16px;
-
-    font-size: 0.9rem;
-
-    line-height: 1.7;
-}
-
-.answer-box strong {
-    display: block;
-
-    margin-bottom: 10px;
-
-    color: #7A8494;
-
-    font-size: 0.8rem;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.8);
 }
 
 .answer-box {
@@ -440,15 +367,84 @@ button {
     padding: 16px;
     font-size: 0.9rem;
     line-height: 1.7;
+}
 
-    /* SCROLL */
-    max-height: 400px;
-    overflow-y: auto;
-    overflow-x: hidden;
+.answer-box strong {
+    display: block;
+    margin-bottom: 10px;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.answer-box p {
+    color: rgba(255,255,255,0.35);
+    font-style: italic;
 }
 
 .ai-answer {
-    color: #374151;
-    white-space: pre-line;
-    line-height: 1.5;
+    color: rgba(255,255,255,0.85);
+    white-space: pre-wrap;   /*model cevabındaki satır sonlarını korur*/
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border-radius: 14px;
+    padding: 12px 22px;
+    margin-bottom: 24px;
+}
+
+.navbar-brand {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2F3542;
+    letter-spacing: 0.5px;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navbar-links a {
+    font-size: 0.875rem;
+    color: #4B5563;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.navbar-links a:hover,
+.navbar-links a.active {
+    color: #2F3542;
+    font-weight: 700;
+}
+
+.logout-btn {
+    background: rgba(220, 38, 38, 0.12);
+    color: #C24145;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background: rgba(220, 38, 38, 0.22);
 }
