@@ -25,6 +25,20 @@
 
 
 
+        <!-- FLASH MESAJI (başarı / hata / bilgi) -->
+
+        @if(session('cevap'))
+
+        <div class="card {{ session('hata') ? 'alert-error' : 'alert-info' }}">
+
+            <p>{{ session('cevap') }}</p>
+
+        </div>
+
+        @endif
+
+
+
         <!-- PDF YÜKLEME -->
 
         <div class="card">

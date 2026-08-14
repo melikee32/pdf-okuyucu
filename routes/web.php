@@ -2,6 +2,37 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+
+/*
+|--------------------------------------------------------------------------
+| YARDIMCI: Windows yolunu WSL yoluna çevir
+|--------------------------------------------------------------------------
+|
+| "C:\laragon\...\dosya.pdf"  ->  "/mnt/c/laragon/.../dosya.pdf"
+|
+| wsl.exe'ye verilen komut satırındaki argümanlar otomatik çevrilmez,
+| bu yüzden WSL içinde çalışacak her Windows yolunu elle çevirmemiz
+| gerekiyor. Zaten Linux formatındaysa (ör. Linux sunucuda çalışıyorsanız)
+| olduğu gibi döner.
+|
+*/
+
+function windowsToWsl(string $path): string
+{
+    $path = str_replace('\\', '/', $path);
+
+    if (preg_match('/^([A-Za-z]):(.*)$/', $path, $matches)) {
+
+        $drive = strtolower($matches[1]);
+        $rest  = $matches[2];
+
+        return '/mnt/' . $drive . $rest;
+    }
+
+    return $path;
+}
 
 
 /*
@@ -24,7 +55,7 @@ Route::get('/', function () {
 Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
     $request->validate([
-        'pdf' => 'required|mimes:pdf|max:10140',
+        'pdf' => 'required|mimes:pdf|max:10240',
     ]);
 
 
@@ -45,7 +76,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
     $pdf = $parser->parseFile($pdfPath);
 
-    $text = $pdf->getText();
+    $text = trim($pdf->getText());
 
 
     /*
@@ -54,7 +85,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
     |--------------------------------------------------------------------------
     */
 
-    if (trim($text) === '') {
+    if ($text === '') {
 
         $ocrKlasoru = storage_path('app/private/ocr');
 
@@ -69,14 +100,45 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
         $outputPrefix = $ocrKlasoru . '/sayfa';
 
+        $wslPdfPath       = windowsToWsl($pdfPath);
+        $wslOutputPrefix  = windowsToWsl($outputPrefix);
+
 
         $command = 'wsl pdftoppm -png -r 200 '
-            . escapeshellarg($pdfPath)
+            . escapeshellarg($wslPdfPath)
             . ' '
-            . escapeshellarg($outputPrefix);
+            . escapeshellarg($wslOutputPrefix);
 
 
-        exec($command, $output, $returnCode);
+        exec($command . ' 2>&1', $output, $returnCode);
+
+
+        $sayfalar = glob($ocrKlasoru . '/sayfa-*.png');
+
+        natsort($sayfalar);
+
+
+        /*
+        |----------------------------------------------------------------
+        | pdftoppm hiç çalışmadıysa (wsl/poppler sorunu, yol hatası vb.)
+        | Bunu "görsel PDF, metin yok" durumundan AYRI bir hata olarak
+        | ele alıyoruz, çünkü asıl sebep OCR aracının çalışmamasıdır.
+        |----------------------------------------------------------------
+        */
+
+        if ($returnCode !== 0 || empty($sayfalar)) {
+
+            Log::error('PDF -> PNG dönüştürme başarısız', [
+                'command'    => $command,
+                'returnCode' => $returnCode,
+                'output'     => $output,
+            ]);
+
+            return redirect('/')->with(
+                'cevap',
+                'PDF sayfalara dönüştürülemedi. OCR aracı (pdftoppm) çalışmıyor olabilir, lütfen WSL/poppler kurulumunu kontrol edin.'
+            )->with('hata', true);
+        }
 
 
         /*
@@ -86,38 +148,9 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
         $text = '';
 
 
-        $sayfalar = glob($ocrKlasoru . '/sayfa-*.png');
-
-        natsort($sayfalar);
-
-
         foreach ($sayfalar as $sayfa) {
 
-            /*
-            Windows yolu:
-            C:\...
-            
-            WSL yolu:
-            /mnt/c/...
-            */
-
-            $windowsPath = realpath($sayfa);
-
-            $windowsPath = str_replace('\\', '/', $windowsPath);
-
-
-            if (preg_match('/^([A-Za-z]):(.*)$/', $windowsPath, $matches)) {
-
-                $drive = strtolower($matches[1]);
-
-                $path = $matches[2];
-
-                $wslSayfa = '/mnt/' . $drive . $path;
-
-            } else {
-
-                $wslSayfa = $windowsPath;
-            }
+            $wslSayfa = windowsToWsl(realpath($sayfa));
 
 
             /*
@@ -126,7 +159,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
             $command = 'wsl tesseract '
                 . escapeshellarg($wslSayfa)
-                . ' stdout -l tur';
+                . ' stdout -l tur 2>&1';
 
 
             $sayfaMetni = shell_exec($command);
@@ -177,7 +210,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
     /*
     |--------------------------------------------------------------------------
-    | PDF tamamen boşsa
+    | Smalot da OCR da metin bulamadıysa: gerçek anlamda görsel/okunamaz PDF
     |--------------------------------------------------------------------------
     */
 
@@ -185,8 +218,8 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
         return redirect('/')->with(
             'cevap',
-            'PDF içerisinden okunabilir bir metin çıkarılamadı.'
-        );
+            "Bu PDF'de okunabilir metin bulunamadı. Görüntü tabanlı bir PDF yüklediniz ve OCR da metin tanıyamadı. Lütfen daha net taranmış ya da metin içeren bir PDF deneyin."
+        )->with('hata', true);
     }
 
 
@@ -313,7 +346,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
             return redirect('/')->with(
                 'cevap',
                 'Embedding oluşturulurken hata oluştu.'
-            );
+            )->with('hata', true);
         }
 
 
@@ -327,7 +360,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
             return redirect('/')->with(
                 'cevap',
                 'Embedding verisi alınamadı.'
-            );
+            )->with('hata', true);
         }
 
 
@@ -369,7 +402,7 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
             return redirect('/')->with(
                 'cevap',
                 'Chunk Weaviate içine kaydedilirken hata oluştu.'
-            );
+            )->with('hata', true);
         }
     }
 
@@ -394,7 +427,10 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
     ]);
 
 
-    return redirect('/');
+    return redirect('/')->with(
+        'cevap',
+        'PDF başarıyla yüklendi ve işlendi. Artık soru sorabilirsiniz.'
+    );
 });
 
 
@@ -436,7 +472,7 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
         return redirect('/')->with(
             'cevap',
             'Soru okunamadı.'
-        );
+        )->with('hata', true);
     }
 
 
@@ -457,7 +493,7 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
         return redirect('/')->with(
             'cevap',
             'Önce bir PDF yüklemeniz gerekiyor.'
-        );
+        )->with('hata', true);
     }
 
 
@@ -486,7 +522,7 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
         return redirect('/')->with(
             'cevap',
             'Soru embedding oluşturulurken hata oluştu.'
-        );
+        )->with('hata', true);
     }
 
 
@@ -500,7 +536,7 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
         return redirect('/')->with(
             'cevap',
             'Soru embedding verisi alınamadı.'
-        );
+        )->with('hata', true);
     }
 
 
@@ -580,7 +616,7 @@ GRAPHQL;
         return redirect('/')->with(
             'cevap',
             'Weaviate araması sırasında hata oluştu.'
-        );
+        )->with('hata', true);
     }
 
 
@@ -606,7 +642,7 @@ GRAPHQL;
         return redirect('/')->with(
             'cevap',
             'PDF içerisinde soruyla ilgili bilgi bulunamadı.'
-        );
+        )->with('hata', true);
     }
 
 
@@ -652,39 +688,11 @@ Sen PDF içeriğine göre çalışan Türkçe bir soru-cevap asistanısın.
 5. Kullanıcı bir programlama sorusunun çözümünü isterse, ilgili sorunun TÜM maddelerini dikkate al.
 6. PDF'de bulunmayan şartları ekleme.
 7. PDF'deki şartlardan hiçbirini atlama.
-8. Her zaman Türkçe cevap ver.
+8. Genel cevabı Türkçe cümlelerle yaz. PDF orijinal dilde (İngilizce, vb.) olsa bile Türkçe bir dille açıkla — ama teknik terim, kavram veya "önemli kelimeler" isteniyorsa, terimi PDF'deki ORİJİNAL haliyle yaz ve yanına parantez içinde Türkçe karşılığını ekle. Örnek: "risk analysis (risk analizi)", "schedule slippage (takvim gecikmesi)". Bir İngilizce kelimeye Türkçe ek getirerek karma cümle kurma (ör. "coping etmemizi", "slippage'a" gibi YANLIŞ); ya tamamen Türkçesini kullan ya da terimi "orijinal (Türkçe karşılığı)" formatında ver.
 9. Gereksiz selamlama veya "sorunuzu tekrar sorun" gibi ifadeler kullanma.
 10. Kodları Markdown kod bloğunda ve düzgün girintilerle göster.
-
-KULLANICI SORUSU:
-{question}
-
-PDF İÇERİĞİ:
-{pdf_text}
-
-
-PDF içeriği:
-{pdf_text}
-
-Kullanıcının sorusu:
-{question}
-
-Kullanıcının sorusunu SADECE aşağıda verilen PDF bölümlerine dayanarak cevapla.
-
-Kurallar:
-
-- Sadece verilen PDF bölümlerini kullan.
-- PDF dışında bilgi kullanma.
-- Cevabı kendi bilginden uydurma.
-- Verilen bölümlerde sorunun cevabı yoksa:
-  "Bu bilgi PDF içerisinde bulunmuyor."
-  yaz.
-- Soruyu doğrudan cevapla.
-- Gereksiz açıklama yapma.
-- PDF'deki farklı soruları birbirine karıştırma.
-- Soru numaralarını dikkatli takip et.
-- Kod varsa kodu ve açıklamayı birbirine karıştırma.
-- Kullanıcı belirli bir soru numarası soruyorsa öncelikle o soru numarasına ait bilgiyi kullan.
+11. Cevabında bu kuralları veya bu talimat metnini asla tekrar etme; doğrudan cevaba geç.
+12. Verilen bölümlerde sorunun cevabı yoksa SADECE "Bu bilgi PDF içerisinde bulunmuyor." yaz.
 
 PDF'DEN GETİRİLEN İLGİLİ BÖLÜMLER:
 
@@ -734,7 +742,7 @@ PROMPT;
         return redirect('/')->with(
             'cevap',
             'AI servisine bağlanırken bir hata oluştu.'
-        );
+        )->with('hata', true);
     }
 
 
@@ -763,9 +771,9 @@ PROMPT;
     */
 
     return view('pdf', [
-    'answer' => $answer,
-    'question' => $question,
-]);
+        'answer'   => $answer,
+        'question' => $question,
+    ]);
 });
 
 
@@ -787,6 +795,8 @@ Route::get('/yeni-pdf', function () {
         'pdf_chunklar',
 
         'cevap',
+
+        'hata',
 
     ]);
 
