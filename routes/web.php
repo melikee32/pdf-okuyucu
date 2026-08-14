@@ -3,32 +3,23 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthController;
+use App\Models\Pdf;
+use App\Models\Question;
 
 
 /*
 |--------------------------------------------------------------------------
 | YARDIMCI: Windows yolunu WSL yoluna çevir
 |--------------------------------------------------------------------------
-|
-| "C:\laragon\...\dosya.pdf"  ->  "/mnt/c/laragon/.../dosya.pdf"
-|
-| wsl.exe'ye verilen komut satırındaki argümanlar otomatik çevrilmez,
-| bu yüzden WSL içinde çalışacak her Windows yolunu elle çevirmemiz
-| gerekiyor. Zaten Linux formatındaysa (ör. Linux sunucuda çalışıyorsanız)
-| olduğu gibi döner.
-|
 */
-
 function windowsToWsl(string $path): string
 {
     $path = str_replace('\\', '/', $path);
 
     if (preg_match('/^([A-Za-z]):(.*)$/', $path, $matches)) {
-
-        $drive = strtolower($matches[1]);
-        $rest  = $matches[2];
-
-        return '/mnt/' . $drive . $rest;
+        return '/mnt/' . strtolower($matches[1]) . $matches[2];
     }
 
     return $path;
@@ -37,764 +28,441 @@ function windowsToWsl(string $path): string
 
 /*
 |--------------------------------------------------------------------------
-| ANA SAYFA
+| AUTH ROUTE'LARI (giriş gerektirmez)
 |--------------------------------------------------------------------------
 */
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/', function () {
-    return view('pdf');
-});
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 /*
 |--------------------------------------------------------------------------
-| PDF YÜKLEME
+| KORUNAN ROUTE'LAR (giriş zorunlu)
 |--------------------------------------------------------------------------
 */
-
-Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
-
-    $request->validate([
-        'pdf' => 'required|mimes:pdf|max:10240',
-    ]);
-
-
-    $dosya = $request->file('pdf');
-
-    $yol = $dosya->store('pdfler');
-
-    $pdfPath = storage_path('app/private/' . $yol);
+Route::middleware('auth')->group(function () {
 
 
     /*
     |--------------------------------------------------------------------------
-    | 1. PDF'yi Smalot ile oku
+    | ANA SAYFA
     |--------------------------------------------------------------------------
     */
-
-    $parser = new \Smalot\PdfParser\Parser();
-
-    $pdf = $parser->parseFile($pdfPath);
-
-    $text = trim($pdf->getText());
+    Route::get('/', function () {
+        return view('pdf');
+    });
 
 
     /*
     |--------------------------------------------------------------------------
-    | 2. PDF'den metin çıkmadıysa OCR kullan
+    | PDF YÜKLEME
     |--------------------------------------------------------------------------
     */
+    Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
 
-    if ($text === '') {
+        $request->validate([
+            'pdf' => 'required|mimes:pdf|max:10240',
+        ]);
 
-        $ocrKlasoru = storage_path('app/private/ocr');
+        $dosya = $request->file('pdf');
+        $yol   = $dosya->store('pdfler');
+        $pdfPath = storage_path('app/private/' . $yol);
 
-        if (!file_exists($ocrKlasoru)) {
-            mkdir($ocrKlasoru, 0777, true);
+
+        /*
+        |----------------------------------------------------------------------
+        | 1. Smalot ile metin çıkar
+        |----------------------------------------------------------------------
+        */
+        $parser = new \Smalot\PdfParser\Parser();
+        $pdf    = $parser->parseFile($pdfPath);
+        $text   = trim($pdf->getText());
+
+
+        /*
+        |----------------------------------------------------------------------
+        | 2. Metin yoksa OCR'a geç
+        |----------------------------------------------------------------------
+        */
+        if ($text === '') {
+
+            $ocrKlasoru = storage_path('app/private/ocr');
+
+            if (!file_exists($ocrKlasoru)) {
+                mkdir($ocrKlasoru, 0777, true);
+            }
+
+            $outputPrefix    = $ocrKlasoru . '/sayfa';
+            $wslPdfPath      = windowsToWsl($pdfPath);
+            $wslOutputPrefix = windowsToWsl($outputPrefix);
+
+            $command = 'wsl pdftoppm -png -r 200 '
+                . escapeshellarg($wslPdfPath) . ' '
+                . escapeshellarg($wslOutputPrefix);
+
+            exec($command . ' 2>&1', $output, $returnCode);
+
+            $sayfalar = glob($ocrKlasoru . '/sayfa-*.png');
+            natsort($sayfalar);
+
+            if ($returnCode !== 0 || empty($sayfalar)) {
+
+                Log::error('PDF -> PNG dönüştürme başarısız', [
+                    'command'    => $command,
+                    'returnCode' => $returnCode,
+                    'output'     => $output,
+                ]);
+
+                return redirect('/')->with('cevap',
+                    'PDF sayfalara dönüştürülemedi. OCR aracı (pdftoppm) çalışmıyor olabilir.'
+                )->with('hata', true);
+            }
+
+            $text = '';
+
+            foreach ($sayfalar as $sayfa) {
+
+                $wslSayfa = windowsToWsl(realpath($sayfa));
+
+                $sayfaMetni = shell_exec(
+                    'wsl tesseract ' . escapeshellarg($wslSayfa) . ' stdout -l tur 2>&1'
+                );
+
+                if ($sayfaMetni) {
+                    $text .= "\n" . $sayfaMetni;
+                }
+            }
+
+            foreach ($sayfalar as $sayfa) {
+                if (file_exists($sayfa)) unlink($sayfa);
+            }
         }
 
 
         /*
-        PDF sayfalarını PNG'ye çevir
+        |----------------------------------------------------------------------
+        | 3. UTF-8 temizliği
+        |----------------------------------------------------------------------
         */
+        $text = iconv('UTF-8', 'UTF-8//IGNORE', $text);
+        $text = $text === false ? '' : trim($text);
 
-        $outputPrefix = $ocrKlasoru . '/sayfa';
-
-        $wslPdfPath       = windowsToWsl($pdfPath);
-        $wslOutputPrefix  = windowsToWsl($outputPrefix);
-
-
-        $command = 'wsl pdftoppm -png -r 200 '
-            . escapeshellarg($wslPdfPath)
-            . ' '
-            . escapeshellarg($wslOutputPrefix);
-
-
-        exec($command . ' 2>&1', $output, $returnCode);
-
-
-        $sayfalar = glob($ocrKlasoru . '/sayfa-*.png');
-
-        natsort($sayfalar);
-
-
-        /*
-        |----------------------------------------------------------------
-        | pdftoppm hiç çalışmadıysa (wsl/poppler sorunu, yol hatası vb.)
-        | Bunu "görsel PDF, metin yok" durumundan AYRI bir hata olarak
-        | ele alıyoruz, çünkü asıl sebep OCR aracının çalışmamasıdır.
-        |----------------------------------------------------------------
-        */
-
-        if ($returnCode !== 0 || empty($sayfalar)) {
-
-            Log::error('PDF -> PNG dönüştürme başarısız', [
-                'command'    => $command,
-                'returnCode' => $returnCode,
-                'output'     => $output,
-            ]);
-
-            return redirect('/')->with(
-                'cevap',
-                'PDF sayfalara dönüştürülemedi. OCR aracı (pdftoppm) çalışmıyor olabilir, lütfen WSL/poppler kurulumunu kontrol edin.'
+        if ($text === '') {
+            return redirect('/')->with('cevap',
+                "Bu PDF'de okunabilir metin bulunamadı. Görüntü tabanlı PDF yüklediniz."
             )->with('hata', true);
         }
 
 
         /*
-        OCR
+        |----------------------------------------------------------------------
+        | 4. Chunk oluştur
+        |----------------------------------------------------------------------
         */
+        $chunks      = [];
+        $chunkSize   = 1000;
+        $overlapSize = 200;
+        $start       = 0;
+        $length      = strlen($text);
 
-        $text = '';
+        while ($start < $length) {
 
+            $chunk = substr($text, $start, $chunkSize);
 
-        foreach ($sayfalar as $sayfa) {
-
-            $wslSayfa = windowsToWsl(realpath($sayfa));
-
-
-            /*
-            Tesseract
-            */
-
-            $command = 'wsl tesseract '
-                . escapeshellarg($wslSayfa)
-                . ' stdout -l tur 2>&1';
-
-
-            $sayfaMetni = shell_exec($command);
-
-
-            if ($sayfaMetni) {
-
-                $text .= "\n" . $sayfaMetni;
+            if ($start + $chunkSize < $length) {
+                $lastSpace = strrpos($chunk, ' ');
+                if ($lastSpace !== false) {
+                    $chunk = substr($chunk, 0, $lastSpace);
+                }
             }
+
+            $chunk = iconv('UTF-8', 'UTF-8//IGNORE', trim($chunk));
+
+            if ($chunk !== false && trim($chunk) !== '') {
+                $chunks[] = trim($chunk);
+            }
+
+            $start += ($chunkSize - $overlapSize);
         }
 
 
         /*
-        Geçici PNG'leri sil
+        |----------------------------------------------------------------------
+        | 5. Weaviate'a embedding + chunk kaydet
+        |----------------------------------------------------------------------
         */
+        foreach ($chunks as $index => $chunk) {
 
-        foreach ($sayfalar as $sayfa) {
-
-            if (file_exists($sayfa)) {
-
-                unlink($sayfa);
-            }
-        }
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 3. UTF-8 temizliği
-    |--------------------------------------------------------------------------
-    */
-
-    $text = iconv(
-        'UTF-8',
-        'UTF-8//IGNORE',
-        $text
-    );
-
-
-    if ($text === false) {
-
-        $text = '';
-    }
-
-
-    $text = trim($text);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Smalot da OCR da metin bulamadıysa: gerçek anlamda görsel/okunamaz PDF
-    |--------------------------------------------------------------------------
-    */
-
-    if ($text === '') {
-
-        return redirect('/')->with(
-            'cevap',
-            "Bu PDF'de okunabilir metin bulunamadı. Görüntü tabanlı bir PDF yüklediniz ve OCR da metin tanıyamadı. Lütfen daha net taranmış ya da metin içeren bir PDF deneyin."
-        )->with('hata', true);
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Chunk oluştur
-    |--------------------------------------------------------------------------
-    */
-
-    $chunks = [];
-
-
-    $chunkSize = 1000;
-
-    $overlapSize = 200;
-
-
-    $startPosition = 0;
-
-    $textLength = strlen($text);
-
-
-    while ($startPosition < $textLength) {
-
-        $chunk = substr(
-            $text,
-            $startPosition,
-            $chunkSize
-        );
-
-
-        /*
-        Kelimenin ortasından bölmemeye çalış
-        */
-
-        if ($startPosition + $chunkSize < $textLength) {
-
-            $lastSpacePosition = strrpos(
-                $chunk,
-                ' '
+            $embeddingResponse = Http::timeout(120)->post(
+                'http://localhost:11434/api/embed',
+                ['model' => 'nomic-embed-text:latest', 'input' => $chunk]
             );
 
+            if ($embeddingResponse->failed()) {
+                return redirect('/')->with('cevap', 'Embedding oluşturulurken hata oluştu.')->with('hata', true);
+            }
 
-            if ($lastSpacePosition !== false) {
+            $embedding = $embeddingResponse->json('embeddings.0');
 
-                $chunk = substr(
-                    $chunk,
-                    0,
-                    $lastSpacePosition
-                );
+            if (!$embedding) {
+                return redirect('/')->with('cevap', 'Embedding verisi alınamadı.')->with('hata', true);
+            }
+
+            $weaviateResponse = Http::timeout(120)->post(
+                'http://localhost:8080/v1/objects',
+                [
+                    'class'      => 'PdfChunk',
+                    'properties' => [
+                        'pdf_adi'     => $dosya->getClientOriginalName(),
+                        'chunk'       => $chunk,
+                        'chunk_index' => $index,
+                    ],
+                    'vector' => $embedding,
+                ]
+            );
+
+            if ($weaviateResponse->failed()) {
+                return redirect('/')->with('cevap', 'Weaviate kayıt hatası.')->with('hata', true);
             }
         }
 
 
-        $chunk = trim($chunk);
+        /*
+        |----------------------------------------------------------------------
+        | 6. DB'ye kaydet
+        |----------------------------------------------------------------------
+        */
+        $pdfKayit = Pdf::create([
+            'user_id'   => Auth::id(),
+            'dosya_adi' => $dosya->getClientOriginalName(),
+            'yol'       => $yol,
+        ]);
 
 
         /*
-        UTF-8 temizliği
+        |----------------------------------------------------------------------
+        | 7. Session
+        |----------------------------------------------------------------------
         */
+        session([
+            'pdf_adi'      => $dosya->getClientOriginalName(),
+            'pdf_metni'    => $text,
+            'pdf_chunklar' => $chunks,
+            'pdf_id'       => $pdfKayit->id,   /*soru kaydederken lazım*/
+        ]);
 
-        $chunk = iconv(
-            'UTF-8',
-            'UTF-8//IGNORE',
-            $chunk
-        );
-
-
-        if ($chunk !== false) {
-
-            $chunk = trim($chunk);
-        }
-
-
-        /*
-        Boş chunk kaydetme
-        */
-
-        if ($chunk !== '') {
-
-            $chunks[] = $chunk;
-        }
-
-
-        /*
-        Overlap
-        */
-
-        $startPosition += (
-            $chunkSize - $overlapSize
-        );
-    }
+        return redirect('/')->with('cevap', 'PDF başarıyla yüklendi. Artık soru sorabilirsiniz.');
+    });
 
 
     /*
     |--------------------------------------------------------------------------
-    | 5. Weaviate'a embedding + chunk kaydet
+    | SORU SOR
     |--------------------------------------------------------------------------
     */
+    Route::post('/soru', function (Illuminate\Http\Request $request) {
 
-    foreach ($chunks as $index => $chunk) {
+        $request->validate(['soru' => 'required']);
+
+        $question = iconv('UTF-8', 'UTF-8//IGNORE', $request->input('soru'));
+
+        if ($question === false) {
+            return redirect('/')->with('cevap', 'Soru okunamadı.')->with('hata', true);
+        }
+
+        $question = trim($question);
+        $pdfAdi   = session('pdf_adi');
+
+        if (!$pdfAdi) {
+            return redirect('/')->with('cevap', 'Önce bir PDF yüklemeniz gerekiyor.')->with('hata', true);
+        }
 
 
         /*
-        Embedding oluştur
+        Soru embedding
         */
-
         $embeddingResponse = Http::timeout(120)->post(
             'http://localhost:11434/api/embed',
-            [
-                'model' => 'nomic-embed-text:latest',
-
-                'input' => $chunk,
-            ]
+            ['model' => 'nomic-embed-text:latest', 'input' => $question]
         );
-
-
-        /*
-        Ollama hata kontrolü
-        */
 
         if ($embeddingResponse->failed()) {
-
-            return redirect('/')->with(
-                'cevap',
-                'Embedding oluşturulurken hata oluştu.'
-            )->with('hata', true);
+            return redirect('/')->with('cevap', 'Soru embedding hatası.')->with('hata', true);
         }
 
+        $soruEmbedding = $embeddingResponse->json('embeddings.0');
 
-        $embedding = $embeddingResponse->json(
-            'embeddings.0'
-        );
-
-
-        if (!$embedding) {
-
-            return redirect('/')->with(
-                'cevap',
-                'Embedding verisi alınamadı.'
-            )->with('hata', true);
+        if (!$soruEmbedding) {
+            return redirect('/')->with('cevap', 'Soru embedding verisi alınamadı.')->with('hata', true);
         }
 
 
         /*
-        Weaviate'a gönder
+        Weaviate arama
         */
+        $vector        = implode(',', $soruEmbedding);
+        $pdfAdiGraphQL = addslashes($pdfAdi);
 
-        $weaviateResponse = Http::timeout(120)->post(
-            'http://localhost:8080/v1/objects',
-            [
-
-                'class' => 'PdfChunk',
-
-                'properties' => [
-
-                    'pdf_adi' =>
-                    $dosya->getClientOriginalName(),
-
-                    'chunk' =>
-                    $chunk,
-
-                    'chunk_index' =>
-                    $index,
-
-                ],
-
-                'vector' =>
-                $embedding,
-            ]
-        );
-
-
-        /*
-        Weaviate hata kontrolü
-        */
-
-        if ($weaviateResponse->failed()) {
-
-            return redirect('/')->with(
-                'cevap',
-                'Chunk Weaviate içine kaydedilirken hata oluştu.'
-            )->with('hata', true);
-        }
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Session
-    |--------------------------------------------------------------------------
-    */
-
-    session([
-
-        'pdf_adi' =>
-        $dosya->getClientOriginalName(),
-
-        'pdf_metni' =>
-        $text,
-
-        'pdf_chunklar' =>
-        $chunks,
-
-    ]);
-
-
-    return redirect('/')->with(
-        'cevap',
-        'PDF başarıyla yüklendi ve işlendi. Artık soru sorabilirsiniz.'
-    );
-});
-
-
-/*
-|--------------------------------------------------------------------------
-| SORU SOR
-|--------------------------------------------------------------------------
-*/
-
-Route::post('/soru', function (Illuminate\Http\Request $request) {
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Soruyu al
-    |--------------------------------------------------------------------------
-    */
-
-    $request->validate([
-        'soru' => 'required',
-    ]);
-
-    $question = $request->input('soru');
-
-
-    /*
-    UTF-8 temizliği
-    */
-
-    $question = iconv(
-        'UTF-8',
-        'UTF-8//IGNORE',
-        $question
-    );
-
-
-    if ($question === false) {
-
-        return redirect('/')->with(
-            'cevap',
-            'Soru okunamadı.'
-        )->with('hata', true);
-    }
-
-
-    $question = trim($question);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Aktif PDF kontrolü
-    |--------------------------------------------------------------------------
-    */
-
-    $pdfAdi = session('pdf_adi');
-
-
-    if (!$pdfAdi) {
-
-        return redirect('/')->with(
-            'cevap',
-            'Önce bir PDF yüklemeniz gerekiyor.'
-        )->with('hata', true);
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Soruyu embedding'e çevir
-    |--------------------------------------------------------------------------
-    */
-
-    $embeddingResponse = Http::timeout(120)->post(
-        'http://localhost:11434/api/embed',
-        [
-
-            'model' =>
-            'nomic-embed-text:latest',
-
-            'input' =>
-            $question,
-
-        ]
-    );
-
-
-    if ($embeddingResponse->failed()) {
-
-        return redirect('/')->with(
-            'cevap',
-            'Soru embedding oluşturulurken hata oluştu.'
-        )->with('hata', true);
-    }
-
-
-    $soruEmbedding = $embeddingResponse->json(
-        'embeddings.0'
-    );
-
-
-    if (!$soruEmbedding) {
-
-        return redirect('/')->with(
-            'cevap',
-            'Soru embedding verisi alınamadı.'
-        )->with('hata', true);
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Weaviate'te arama
-    |--------------------------------------------------------------------------
-    |
-    | SADECE şu anda yüklenmiş olan PDF'de ara.
-    |
-    */
-
-    $vector = implode(
-        ',',
-        $soruEmbedding
-    );
-
-
-    /*
-    PDF adını GraphQL içerisinde güvenli şekilde kullan
-    */
-
-    $pdfAdiGraphQL = addslashes(
-        $pdfAdi
-    );
-
-
-    $graphql = <<<GRAPHQL
+        $graphql = <<<GRAPHQL
 {
     Get {
         PdfChunk(
-            nearVector: {
-                vector: [$vector]
-            }
-
+            nearVector: { vector: [$vector] }
             where: {
                 path: ["pdf_adi"]
                 operator: Equal
                 valueText: "$pdfAdiGraphQL"
             }
-
             limit: 5
         ) {
-
             pdf_adi
-
             chunk
-
             chunk_index
-
-            _additional {
-                distance
-            }
+            _additional { distance }
         }
     }
 }
 GRAPHQL;
 
+        $weaviateResponse = Http::timeout(120)->post(
+            'http://localhost:8080/v1/graphql',
+            ['query' => $graphql]
+        );
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Weaviate sorgusu
-    |--------------------------------------------------------------------------
-    */
+        if ($weaviateResponse->failed()) {
+            return redirect('/')->with('cevap', 'Weaviate araması hatası.')->with('hata', true);
+        }
 
-    $weaviateResponse = Http::timeout(120)->post(
-        'http://localhost:8080/v1/graphql',
-        [
-            'query' =>
-            $graphql,
-        ]
-    );
+        $sonuclar = $weaviateResponse->json('data.Get.PdfChunk');
 
-
-    if ($weaviateResponse->failed()) {
-
-        return redirect('/')->with(
-            'cevap',
-            'Weaviate araması sırasında hata oluştu.'
-        )->with('hata', true);
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Sonuçları al
-    |--------------------------------------------------------------------------
-    */
-
-    $sonuclar = $weaviateResponse->json(
-        'data.Get.PdfChunk'
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Weaviate hata döndürdüyse
-    |--------------------------------------------------------------------------
-    */
-
-    if (!$sonuclar) {
-
-        return redirect('/')->with(
-            'cevap',
-            'PDF içerisinde soruyla ilgili bilgi bulunamadı.'
-        )->with('hata', true);
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 7. İlgili chunk'ları birleştir
-    |--------------------------------------------------------------------------
-    */
-
-    $ilgiliMetin = '';
-
-
-    foreach ($sonuclar as $sonuc) {
-
-        if (!isset($sonuc['chunk'])) {
-
-            continue;
+        if (!$sonuclar) {
+            return redirect('/')->with('cevap', 'PDF içerisinde soruyla ilgili bilgi bulunamadı.')->with('hata', true);
         }
 
 
-        $ilgiliMetin .= "\n\n";
+        /*
+        İlgili chunk'ları birleştir
+        */
+        $ilgiliMetin = '';
+        foreach ($sonuclar as $sonuc) {
+            if (!isset($sonuc['chunk'])) continue;
+            $ilgiliMetin .= "\n\n" . $sonuc['chunk'];
+        }
 
-        $ilgiliMetin .=
-            $sonuc['chunk'];
-    }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Llama3 Prompt
-    |--------------------------------------------------------------------------
-    */
-
-    $prompt = <<<PROMPT
+        /*
+        Prompt
+        */
+        $prompt = <<<PROMPT
 Sen PDF içeriğine göre çalışan Türkçe bir soru-cevap asistanısın.
 
-Aşağıdaki metin, kullanıcının seçtiği PDF'den alınmış ilgili içeriktir.
+ÇOK ÖNEMLİ KURALLAR:
 
-Kurallar:
-- Sadece aşağıdaki PDF içeriğine dayanarak cevap ver.
-- Kullanıcının sorusuna doğrudan ve açık cevap ver.
-- PDF'de soruyla ilgili bilgi varsa bunu anlaşılır şekilde özetle.
-- Kullanıcı PDF'nin genel içeriğini soruyorsa, verilen içerikten PDF'nin konusunu ve önemli bölümlerini özetle.
-- PDF'de cevap için yeterli bilgi yoksa "Bu bilgi PDF içerisinde bulunmamaktadır." şeklinde cevap ver.
-- Gereksiz açıklamalar yapma.
-- Soruyu cevaplamak yerine PDF hakkında yorum yapma.
-- "Bu bilgi soruyu cevaplamaya yardımcı olmaz" gibi ifadeler kullanma.
-- Cevabın sonunda ek yorum veya değerlendirme yapma.
-- Türkçe cevap ver.
+1. Kullanıcının sorduğu soru numarasını dikkatlice belirle.
+2. Örneğin kullanıcı "5. soru" diyorsa SADECE PDF'deki "Soru 5" başlığının altında bulunan içeriği kullan.
+3. Başka bir sorunun içeriğini Soru 5 ile kesinlikle karıştırma.
+4. Soru numarasını tahmin etme veya değiştirme.
+5. Kullanıcı bir programlama sorusunun çözümünü isterse, ilgili sorunun TÜM maddelerini dikkate al.
+6. PDF'de bulunmayan şartları, kelime veya bilgileri kesinlikle ekleme; uydurma.
+7. PDF'deki şartlardan hiçbirini atlama.
+8. Genel cevabı Türkçe cümlelerle yaz. PDF orijinal dilde (İngilizce, vb.) olsa bile Türkçe bir dille açıkla — ama teknik terim, kavram veya "önemli kelimeler" isteniyorsa, terimi PDF'deki ORİJİNAL haliyle yaz ve yanına parantez içinde Türkçe karşılığını ekle. Örnek: "risk analysis (risk analizi)", "schedule slippage (takvim gecikmesi)". Bir İngilizce kelimeye Türkçe ek getirerek karma cümle kurma.
+9. Gereksiz selamlama, "sorunuzu tekrar sorun", "cevaplayalım", "cevap verelim" gibi giriş ifadeleri kullanma. Doğrudan cevaba başla.
+10. Kodları Markdown kod bloğunda ve düzgün girintilerle göster.
+11. Cevabında bu kuralları, talimat metnini veya kural numaralarını asla tekrar etme. İlk kelimenden itibaren doğrudan cevap ver.
+12. Verilen bölümlerde sorunun cevabı yoksa SADECE "Bu bilgi PDF içerisinde bulunmuyor." yaz.
+13. Kelime listesi istendiğinde SADECE aşağıdaki bölümlerde gerçekten geçen kelimeleri ver. Bölümlerde geçmeyen kelime uydurma; listeyi kısalt, ama uydurma.
 
-PDF İçeriği:
+PDF'DEN GETİRİLEN İLGİLİ BÖLÜMLER:
+
 $ilgiliMetin
 
-Kullanıcının Sorusu:
+
+KULLANICININ SORUSU:
+
 $question
+
 
 CEVAP:
 PROMPT;
 
 
+        /*
+        Llama3
+        */
+        $response = Http::timeout(120)->post(
+            'http://localhost:11434/api/generate',
+            ['model' => 'llama3:latest', 'prompt' => $prompt, 'stream' => false]
+        );
+
+        if ($response->failed()) {
+            return redirect('/')->with('cevap', 'AI servisine bağlanırken hata oluştu.')->with('hata', true);
+        }
+
+        $answer = $response->json('response') ?? 'AI tarafından cevap alınamadı.';
+
+
+        /*
+        |----------------------------------------------------------------------
+        | DB'ye kaydet
+        |----------------------------------------------------------------------
+        */
+        Question::create([
+            'user_id' => Auth::id(),
+            'pdf_id'  => session('pdf_id'),
+            'soru'    => $question,
+            'cevap'   => $answer,
+        ]);
+
+
+        return view('pdf', [
+            'answer'   => $answer,
+            'question' => $question,
+        ]);
+    });
+
+
     /*
     |--------------------------------------------------------------------------
-    | 9. Llama3
+    | GEÇMİŞ
     |--------------------------------------------------------------------------
     */
+    Route::get('/gecmis', function () {
 
-    $response = Http::timeout(120)->post(
-        'http://localhost:11434/api/generate',
-        [
+        /*
+        Giriş yapan kullanıcının tüm soruları, en yeni önce
+        PDF adıyla birlikte çek
+        */
+        $sorular = Question::with('pdf')
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->paginate(15);
 
-            'model' =>
-            'llama3:latest',
-
-            'prompt' =>
-            $prompt,
-
-            'stream' =>
-            false,
-
-        ]
-    );
+        return view('gecmis', compact('sorular'));
+    });
 
 
     /*
     |--------------------------------------------------------------------------
-    | Llama hata kontrolü
+    | YENİ PDF
     |--------------------------------------------------------------------------
     */
+    Route::get('/yeni-pdf', function () {
 
-    if ($response->failed()) {
-
-        return redirect('/')->with(
+        session()->forget([
+            'pdf_adi',
+            'pdf_metni',
+            'pdf_chunklar',
+            'pdf_id',
             'cevap',
-            'AI servisine bağlanırken bir hata oluştu.'
-        )->with('hata', true);
-    }
+            'hata',
+        ]);
 
+        return redirect('/');
+    });
 
-    /*
-    |--------------------------------------------------------------------------
-    | 10. Cevabı al
-    |--------------------------------------------------------------------------
-    */
-
-    $answer = $response->json(
-        'response'
-    );
-
-
-    if (!$answer) {
-
-        $answer =
-            'AI tarafından cevap alınamadı.';
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 11. Cevabı göster
-    |--------------------------------------------------------------------------
-    */
-
-    return view('pdf', [
-        'answer'   => $answer,
-        'question' => $question,
-    ]);
-});
-
-
-/*
-|--------------------------------------------------------------------------
-| YENİ PDF
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/yeni-pdf', function () {
-
-
-    session()->forget([
-
-        'pdf_adi',
-
-        'pdf_metni',
-
-        'pdf_chunklar',
-
-        'cevap',
-
-        'hata',
-
-    ]);
-
-
-    return redirect('/');
 });
