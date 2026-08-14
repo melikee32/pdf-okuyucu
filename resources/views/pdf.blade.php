@@ -5,217 +5,275 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> 📚 PDF Okuyucu </title>
+    <title>📚 PDF Okuyucu</title>
 
     @vite('resources/css/pdf.css')
-
 </head>
 
 <body>
 
-
-
     <div class="container">
 
+        <!-- BAŞLIK -->
         <div class="header">
-
             <h1>📚 PDF Okuyucu</h1>
-
             <p>PDF dosyanızı yükleyin ve içeriği hakkında sorular sorun</p>
-
         </div>
 
 
+        <!-- AKTİF DOKÜMAN BARI -->
+        <!-- Sadece PDF yüklüyse görünür -->
+        @if(session('pdf_adi'))
 
-        <!-- FLASH MESAJI (başarı / hata / bilgi) -->
+        <div class="active-doc-bar">
 
-        @if(session('cevap'))
+            <span class="dot"></span>
 
-        <div class="card {{ session('hata') ? 'alert-error' : 'alert-info' }}">
+            <span>
+                Aktif Doküman: {{ session('pdf_adi') }}
+            </span>
 
-            <p>{{ session('cevap') }}</p>
+            <a href="/yeni-pdf">
+                Değiştir ›
+            </a>
 
         </div>
 
         @endif
 
 
+        <!-- FLASH MESAJI -->
+        @if(session('cevap'))
 
-        <!-- PDF YÜKLEME -->
+        <div class="{{ session('hata') ? 'alert-error' : 'alert-info' }}">
+            <p>{{ session('cevap') }}</p>
+        </div>
+
+        @endif
+
+
+
+        {{-- =====================================================
+         PDF YÜKLENMEDİYSE
+         SADECE PDF YÜKLEME ALANI GÖRÜNECEK
+         ===================================================== --}}
+
+        @if(!session('pdf_adi'))
 
         <div class="card">
+
             <div class="upload-area">
 
                 <h2>📄 PDF Yükle</h2>
-                <br>
-                <p>Analiz etmek istediğiniz PDF dosyasını seçiniz.</p>
+
+                <p>
+                    Analiz etmek istediğiniz PDF dosyasını seçiniz.
+                </p>
 
 
-
-                <form id="uploadForm" action="/pdf-yukle" method="POST" enctype="multipart/form-data">
+                <form
+                    id="uploadForm"
+                    action="/pdf-yukle"
+                    method="POST"
+                    enctype="multipart/form-data">
 
                     @csrf
 
-                    <input id="pdfInput" type="file" name="pdf" accept=".pdf">
 
-                    <br><br>
+                    <input
+                        id="pdfInput"
+                        type="file"
+                        name="pdf"
+                        accept=".pdf"
+                        required>
 
-                    <button id="uploadButton" class="upload-button" type="submit"> PDF YÜKLE </button>
 
-                    <p id="uploadMessage" class="upload-message"></p>
+                    <button
+                        id="uploadButton"
+                        type="submit"
+                        class="upload-button">
+
+                        ➤ PDF YÜKLE
+
+                    </button>
+
+
+                    <p
+                        id="uploadMessage"
+                        class="upload-message">
+                    </p>
 
                 </form>
+
             </div>
+
         </div>
 
 
 
-        <!-- PDF YÜKLENDİYSE -->
+        {{-- =====================================================
+         PDF YÜKLENDİYSE
+         SOLDA PDF + SAĞDA SORU/AI
+         ===================================================== --}}
 
-        @if(session('pdf_adi'))
+        @else
 
-        <div class="card">
+        <div class="pdf-layout">
 
-            <h2>📄 Yüklenen PDF</h2>
 
-            <div class="pdf-file">
 
-                <div class="pdf-info">
-                    <span>📄</span>
 
-                    <span class="upload-text">
-                        {{ session('pdf_adi') }}
-                    </span>
+            <!-- SAĞ TARAF -->
+            <div class="pdf-main">
+
+
+                <!-- SORU SOR -->
+                <div class="card question-area">
+
+                    <h2>
+                        💬 PDF Hakkında Soru Sor
+                    </h2>
+
+
+                    <form
+                        action="/soru"
+                        method="POST">
+
+                        @csrf
+
+
+                        <textarea
+                            name="soru"
+                            placeholder="PDF hakkında sorunuzu yazınız..."
+                            required></textarea>
+
+
+                        <button
+                            type="submit"
+                            class="question-button">
+
+                            SOR
+
+                        </button>
+
+                    </form>
+
                 </div>
 
-                <a href="/yeni-pdf" class="clear-pdf">
-                    ✕ Temizle
-                </a>
-
-            </div>
-
-        </div>
 
 
+                <!-- AI CEVABI -->
+                <div class="card">
+
+                    <h2>
+                        🤖 AI Cevabı
+                    </h2>
 
 
+                    <div class="question-box">
+
+                        <strong>Sorunuz</strong>
+
+                        <p>
+                            {{ $question ?? '' }}
+                        </p>
+
+                    </div>
 
 
-        <!-- SORU SORMA -->
+                    <div class="answer-box">
 
-        <div class="card question-area">
-            <h2>💬 PDF Hakkında Soru Sor</h2>
-
-            <form action="/soru" method="POST">
-
-                @csrf
-
-                <textarea
-                    name="soru"
-                    placeholder="PDF hakkında sorunuzu yazınız..."
-                    required></textarea>
-
-                <button
-                    type="submit"
-                    class="question-button">
-                    SOR
-                </button>
-
-            </form>
+                        <strong>Cevap</strong>
 
 
-        </div>
+                        @if(isset($answer) && $answer)
 
+                        <div class="ai-answer">
+                            {{ $answer }}
+                        </div>
 
+                        @else
 
-        <div class="card">
+                        <p>
+                            AI cevabı burada görünecek...
+                        </p>
 
-            <h2>🤖 AI Cevabı</h2>
+                        @endif
 
-            <div class="question-box">
-                <strong>💬 Sorunuz:</strong>
-                <p>{{ $question ?? '' }}</p>
-            </div>
+                    </div>
 
-            <div class="answer-box">
-                <strong>🤖 Cevap:</strong>
-
-                @if(isset($answer) && $answer)
-
-                <div class="ai-answer">
-                    {!! nl2br(e($answer)) !!}
                 </div>
 
-                @else
 
-                <p>AI cevabı burada görünecek...</p>
-
-                @endif
             </div>
 
         </div>
-
 
         @endif
-
 
     </div>
 
 
 
-    <script>
-        //<input id="pdfInput"> elementini JavaScript'e tanıtıyor.
+    <!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
 
+    <script>
         const pdfInput = document.getElementById("pdfInput");
         const uploadButton = document.getElementById("uploadButton");
         const uploadMessage = document.getElementById("uploadMessage");
 
 
-        // Kullanıcı PDF seçtiğinde . //* change = kullanıcı dosya seçtiğinde çalış.
-
-        pdfInput.addEventListener("change", function() {
-
-            if (pdfInput.files.length > 0) {
-
-                uploadButton.classList.remove("error");
-                uploadButton.classList.add("ready"); //butona ready class'ı ekliyor. yeşil 
-
-                uploadMessage.classList.remove("error");
-                uploadMessage.classList.add("success");
-
-                uploadMessage.textContent =
-                    "PDF seçildi. Yüklemeye hazırsınız.";
-
-            }
-
-        });
+        // PDF yükleme alanı sayfada varsa çalıştır
+        if (pdfInput && uploadButton && uploadMessage) {
 
 
-        // Kullanıcı dosya seçmeden PDF YÜKLE butonuna bastığında
+            // Kullanıcı PDF seçtiğinde
+            pdfInput.addEventListener("change", function() {
 
-        uploadButton.addEventListener("click", function(event) {
+                if (pdfInput.files.length > 0) {
 
-            if (pdfInput.files.length === 0) {
+                    uploadButton.classList.remove("error");
 
-                event.preventDefault(); //formun gönderilmesini engelliyor.
+                    uploadButton.classList.add("ready");
 
-                uploadButton.classList.remove("ready");
-                uploadButton.classList.add("error"); //* butona error class'ı ekliyor. kırmızı
+                    uploadMessage.classList.remove("error");
 
-                uploadMessage.classList.remove("success");
-                uploadMessage.classList.add("error");
+                    uploadMessage.classList.add("success");
 
-                uploadMessage.textContent =
-                    "Lütfen önce bir PDF dosyası seçin.";
+                    uploadMessage.textContent =
+                        "PDF seçildi. Yüklemeye hazırsınız.";
 
-            }
+                }
 
-        });
+            });
+
+
+            // Dosya seçmeden yüklemeye basınca
+            uploadButton.addEventListener("click", function(event) {
+
+                if (pdfInput.files.length === 0) {
+
+                    event.preventDefault();
+
+                    uploadButton.classList.remove("ready");
+
+                    uploadButton.classList.add("error");
+
+                    uploadMessage.classList.remove("success");
+
+                    uploadMessage.classList.add("error");
+
+                    uploadMessage.textContent =
+                        "Lütfen önce bir PDF dosyası seçin.";
+
+                }
+
+            });
+
+        }
     </script>
-
-
-
-
 
 
 </body>

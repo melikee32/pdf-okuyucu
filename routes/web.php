@@ -377,18 +377,18 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
                 'properties' => [
 
                     'pdf_adi' =>
-                        $dosya->getClientOriginalName(),
+                    $dosya->getClientOriginalName(),
 
                     'chunk' =>
-                        $chunk,
+                    $chunk,
 
                     'chunk_index' =>
-                        $index,
+                    $index,
 
                 ],
 
                 'vector' =>
-                    $embedding,
+                $embedding,
             ]
         );
 
@@ -416,13 +416,13 @@ Route::post('/pdf-yukle', function (Illuminate\Http\Request $request) {
     session([
 
         'pdf_adi' =>
-            $dosya->getClientOriginalName(),
+        $dosya->getClientOriginalName(),
 
         'pdf_metni' =>
-            $text,
+        $text,
 
         'pdf_chunklar' =>
-            $chunks,
+        $chunks,
 
     ]);
 
@@ -508,10 +508,10 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
         [
 
             'model' =>
-                'nomic-embed-text:latest',
+            'nomic-embed-text:latest',
 
             'input' =>
-                $question,
+            $question,
 
         ]
     );
@@ -606,7 +606,7 @@ GRAPHQL;
         'http://localhost:8080/v1/graphql',
         [
             'query' =>
-                $graphql,
+            $graphql,
         ]
     );
 
@@ -679,31 +679,25 @@ GRAPHQL;
     $prompt = <<<PROMPT
 Sen PDF içeriğine göre çalışan Türkçe bir soru-cevap asistanısın.
 
-ÇOK ÖNEMLİ KURALLAR:
+Aşağıdaki metin, kullanıcının seçtiği PDF'den alınmış ilgili içeriktir.
 
-1. Kullanıcının sorduğu soru numarasını dikkatlice belirle.
-2. Örneğin kullanıcı "5. soru" diyorsa SADECE PDF'deki "Soru 5" başlığının altında bulunan içeriği kullan.
-3. Başka bir sorunun içeriğini Soru 5 ile kesinlikle karıştırma.
-4. Soru numarasını tahmin etme veya değiştirme.
-5. Kullanıcı bir programlama sorusunun çözümünü isterse, ilgili sorunun TÜM maddelerini dikkate al.
-6. PDF'de bulunmayan şartları, kelime veya bilgileri kesinlikle ekleme; uydurma.
-7. PDF'deki şartlardan hiçbirini atlama.
-8. Genel cevabı Türkçe cümlelerle yaz. PDF orijinal dilde (İngilizce, vb.) olsa bile Türkçe bir dille açıkla — ama teknik terim, kavram veya "önemli kelimeler" isteniyorsa, terimi PDF'deki ORİJİNAL haliyle yaz ve yanına parantez içinde Türkçe karşılığını ekle. Örnek: "risk analysis (risk analizi)", "schedule slippage (takvim gecikmesi)". Bir İngilizce kelimeye Türkçe ek getirerek karma cümle kurma (ör. "coping etmemizi", "slippage'a" gibi YANLIŞ); ya tamamen Türkçesini kullan ya da terimi "orijinal (Türkçe karşılığı)" formatında ver.
-9. Gereksiz selamlama, "sorunuzu tekrar sorun", "cevaplayalım", "cevap verelim" gibi giriş ifadeleri kullanma. Doğrudan cevaba başla.
-10. Kodları Markdown kod bloğunda ve düzgün girintilerle göster.
-11. Cevabında bu kuralları, talimat metnini veya kural numaralarını asla tekrar etme. İlk kelimenden itibaren doğrudan cevap ver.
-12. Verilen bölümlerde sorunun cevabı yoksa SADECE "Bu bilgi PDF içerisinde bulunmuyor." yaz.
-13. Kelime listesi istendiğinde SADECE aşağıdaki bölümlerde gerçekten geçen kelimeleri ver. Bölümlerde geçmeyen kelime uydurma; listeyi kısalt, ama uydurma.
+Kurallar:
+- Sadece aşağıdaki PDF içeriğine dayanarak cevap ver.
+- Kullanıcının sorusuna doğrudan ve açık cevap ver.
+- PDF'de soruyla ilgili bilgi varsa bunu anlaşılır şekilde özetle.
+- Kullanıcı PDF'nin genel içeriğini soruyorsa, verilen içerikten PDF'nin konusunu ve önemli bölümlerini özetle.
+- PDF'de cevap için yeterli bilgi yoksa "Bu bilgi PDF içerisinde bulunmamaktadır." şeklinde cevap ver.
+- Gereksiz açıklamalar yapma.
+- Soruyu cevaplamak yerine PDF hakkında yorum yapma.
+- "Bu bilgi soruyu cevaplamaya yardımcı olmaz" gibi ifadeler kullanma.
+- Cevabın sonunda ek yorum veya değerlendirme yapma.
+- Türkçe cevap ver.
 
-PDF'DEN GETİRİLEN İLGİLİ BÖLÜMLER:
-
+PDF İçeriği:
 $ilgiliMetin
 
-
-KULLANICININ SORUSU:
-
+Kullanıcının Sorusu:
 $question
-
 
 CEVAP:
 PROMPT;
@@ -720,13 +714,13 @@ PROMPT;
         [
 
             'model' =>
-                'llama3:latest',
+            'llama3:latest',
 
             'prompt' =>
-                $prompt,
+            $prompt,
 
             'stream' =>
-                false,
+            false,
 
         ]
     );
