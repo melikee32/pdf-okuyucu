@@ -116,23 +116,23 @@
 
             <h2>🤖 AI Cevabı</h2>
 
-            <div>
+            <div class="question-box">
+                <strong>💬 Sorunuz:</strong>
+                <p>{{ $question ?? '' }}</p>
+            </div>
 
-                <div class="question-box">
-                    <strong>💬 Sorunuz:</strong>
-                    <p>{{ $question ?? '' }}</p>
+            <div class="answer-box">
+                <strong>🤖 Cevap:</strong>
+
+                @if(isset($answer) && $answer)
+
+                <div class="ai-answer">
+                    {!! nl2br(e($answer)) !!}
                 </div>
-
-                <br>
-                @if(session('answer'))
-
-                <p> {{ session('answer') }}</p>
 
                 @else
 
-                <p>
-                    AI cevabı burada görünecek...
-                </p>
+                <p>AI cevabı burada görünecek...</p>
 
                 @endif
             </div>

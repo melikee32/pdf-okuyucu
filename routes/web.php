@@ -424,14 +424,14 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
     UTF-8 temizliği
     */
 
-    $soru = iconv(
+    $question = iconv(
         'UTF-8',
         'UTF-8//IGNORE',
-        $soru
+        $question
     );
 
 
-    if ($soru === false) {
+    if ($question === false) {
 
         return redirect('/')->with(
             'cevap',
@@ -440,7 +440,7 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
     }
 
 
-    $soru = trim($soru);
+    $question = trim($question);
 
 
     /*
@@ -475,7 +475,7 @@ Route::post('/soru', function (Illuminate\Http\Request $request) {
                 'nomic-embed-text:latest',
 
             'input' =>
-                $soru,
+                $question,
 
         ]
     );
@@ -641,37 +641,26 @@ GRAPHQL;
     */
 
     $prompt = <<<PROMPT
-Sen bir PDF soru-cevap asistanısın.
-Sen Türkçe konuşan bir PDF asistanısın.
+Sen PDF içeriğine göre çalışan Türkçe bir soru-cevap asistanısın.
 
-Cevap verirken PDF'deki sorunun tüm şartlarına uymalısın.
-Soruda istenen hiçbir maddeyi atlama veya değiştirme.
-Eğer kullanıcı bir programlama sorusunun çözümünü isterse, çözüm kodunun PDF'deki tüm koşulları karşıladığından emin ol.
-PDF'de istenmeyen ek davranışlar ekleme.
+ÇOK ÖNEMLİ KURALLAR:
 
-- Kullanıcıya her zaman Türkçe cevap ver.
-- Kullanıcı farklı bir dilde soru sormadığı sürece cevaplarını Türkçe oluştur.
-- Sadece yüklenen PDF'nin içeriğine dayanarak cevap ver.
-- PDF'de bulunmayan bilgileri uydurma.
-- Kullanıcının sorduğu soruya doğrudan cevap ver.
-- Kullanıcı özet istemediyse PDF'nin tamamını özetleme.
-- Cevabı açık, anlaşılır ve mümkün olduğunca kısa tut.
+1. Kullanıcının sorduğu soru numarasını dikkatlice belirle.
+2. Örneğin kullanıcı "5. soru" diyorsa SADECE PDF'deki "Soru 5" başlığının altında bulunan içeriği kullan.
+3. Başka bir sorunun içeriğini Soru 5 ile kesinlikle karıştırma.
+4. Soru numarasını tahmin etme veya değiştirme.
+5. Kullanıcı bir programlama sorusunun çözümünü isterse, ilgili sorunun TÜM maddelerini dikkate al.
+6. PDF'de bulunmayan şartları ekleme.
+7. PDF'deki şartlardan hiçbirini atlama.
+8. Her zaman Türkçe cevap ver.
+9. Gereksiz selamlama veya "sorunuzu tekrar sorun" gibi ifadeler kullanma.
+10. Kodları Markdown kod bloğunda ve düzgün girintilerle göster.
 
-Kodlama sorularını yanıtlarken kodu tek paragraf halinde yazma.
+KULLANICI SORUSU:
+{question}
 
-Kodları:
-- Markdown kod bloğu içinde göster.
-- Python kodları için ```python kullan.
-- Her komutu ayrı satırda yaz.
-- Girintileri (indentation) düzgün koru.
-- Koddan önce kısa bir açıklama yap.
-- Koddan sonra gerekiyorsa kısa bir açıklama yap.
-- Kod ile açıklamayı aynı paragrafta birleştirme.
-- Kodun okunabilir ve düzenli olmasına dikkat et.
-- Soruda istenen tüm şartları kodda uygula.
-
-Cevap formatını düzenli tut. Başlıklar, paragraflar, madde işaretleri ve kod bloklarını birbirinden ayır. 
-Uzun ve tek paragraflık cevaplar verme.
+PDF İÇERİĞİ:
+{pdf_text}
 
 
 PDF içeriği:
@@ -704,7 +693,7 @@ $ilgiliMetin
 
 KULLANICININ SORUSU:
 
-$soru
+$question
 
 
 CEVAP:
