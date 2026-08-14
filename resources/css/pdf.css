@@ -12,11 +12,14 @@
 body {
 
     font-family: Arial, Helvetica, sans-serif;  /*yazı tipi*/
-    background-color: #e2e3e7;                /*arla plan*/
-    min-height: 100vh;                          /*sayfa en az ekran h kadar olmasını sağlar*/
-    padding: 40px;                              /*sayfa kenarından boşluk*/
+    background-color: #e2e3e7;                  /*arka plan*/
+    min-height: 200vh;                          /*sayfa en az ekran h kadar olmasını sağlar — vh burada doğru, % body'de çalışmaz*/
+    padding: 20px;                              /*sayfa kenarından boşluk*/
 
 }
+
+
+
 
 /*Kısaca: İçeriği ortalar ve çok fazla genişlemesini engeller.*/
 .container {
@@ -26,20 +29,21 @@ body {
 
 }
 
-.header{
-    text-align: center;      /*yazıları ortalar*/
-    margin-bottom: 35px;     /*altına 35px boşluk bırakır*/
+.header {
+    text-align: center;       /*yazıları ortalar*/
+    margin-bottom: 25px;      /*altına 35px boşluk bırakır*/
 }
 
-.header h1{
+.header h1 {
 
-    font-size: medium;
+    font-size: 1.5rem;        /*px yerine rem — tarayıcı font ayarına göre ölçeklenir*/
     margin-bottom: 10px;
 
 }
 
 .header p {
     color: #666;
+    font-size: 1rem;
 }
 
 .card {
@@ -52,11 +56,22 @@ body {
 
 }
 
-.upload-text{
+/* Flash mesaj kartları */
+.alert-info {
+    border-left: 4px solid #1e88e5;
+    background: #e8f2fd;
+}
+
+.alert-error {
+    border-left: 4px solid #e53935;
+    background: #fdecea;
+}
+
+.upload-text {
     color: #047857;
     font-weight: bold;
     font-style: italic;
-    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     line-height: 2;
 }
 
@@ -79,14 +94,14 @@ input[type="file"] {
 }
 
 button {
-    border: none;         /*kenarlığı kaldır*/
-    padding: 12px 25px;   /*butonu büyüt*/
-    border-radius: 8px;   /*köşeleri yuvarlar*/
-    cursor: pointer;      /*üzerine gelince fare işareti değişir*/
-    font-size: 15px;
+    border: none;           /*kenarlığı kaldır*/
+    padding: 12px 25px;     /*butonu büyüt*/
+    border-radius: 8px;     /*köşeleri yuvarlar*/
+    cursor: pointer;        /*üzerine gelince fare işareti değişir*/
+    font-size: 0.9375rem;   /*15px → rem — tarayıcı font ayarına göre ölçeklenir*/
 }
 
-.upload-button { 
+.upload-button {
     background: #047857;
     color: white;
     font-weight: 600;
@@ -98,7 +113,7 @@ button {
 
 .upload-message {
     margin-top: 10px;
-    font-weight: 6500;
+    font-weight: 650;
     min-height: 20px;
 }
 
@@ -160,7 +175,7 @@ button {
     color: #dc2626;
     text-decoration: none;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.875rem;    /*14px → rem*/
 }
 
 .clear-pdf:hover {
@@ -170,12 +185,12 @@ button {
 
 .question-area textarea {
     width: 100%;              /*kartın tamamını kaplar*/
-    min-height: 120px;        /*en az 120 px h*/
-    resize: vertical;         /*user sadece yukarı aşağı arttırabilir*/
+    min-height: 120px;        /*en az 120px yükseklik*/
+    resize: vertical;         /*kullanıcı sadece yukarı aşağı artırabilir*/
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 0.9375rem;     /*15px → rem*/
     margin: 15px 0;           /*üst alt boşluk*/
 }
 
@@ -195,7 +210,7 @@ button {
     background: #f7f7f7;
     border-radius: 10px;
     padding: 20px;
-    margin-top: 15px;       /*üst boşluk*/
+    margin-top: 15px;         /*üst boşluk*/
     line-height: 1.6;
 }
 
@@ -214,4 +229,17 @@ button {
 
 .question-box p {
     margin: 0;
+}
+
+.answer-box {
+    background: #f7f7f7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+    line-height: 1.6;
+}
+
+.ai-answer {
+    margin-top: 10px;
+    white-space: pre-wrap;    /*model cevabındaki satır sonlarını korur*/
 }
