@@ -112,20 +112,21 @@
 
 
 
-        <!-- AI CEVABI -->
-
         <div class="card">
 
             <h2>🤖 AI Cevabı</h2>
 
             <div>
 
-                <br>
-                @if(session('cevap'))
+                <div class="question-box">
+                    <strong>💬 Sorunuz:</strong>
+                    <p>{{ $question ?? '' }}</p>
+                </div>
 
-                <p>
-                    {{ session('cevap') }}
-                </p>
+                <br>
+                @if(session('answer'))
+
+                <p> {{ session('answer') }}</p>
 
                 @else
 
@@ -144,57 +145,57 @@
 
     </div>
 
-    
-
-        <script>
-            //<input id="pdfInput"> elementini JavaScript'e tanıtıyor.
-
-            const pdfInput = document.getElementById("pdfInput");
-            const uploadButton = document.getElementById("uploadButton");
-            const uploadMessage = document.getElementById("uploadMessage");
 
 
-            // Kullanıcı PDF seçtiğinde . //* change = kullanıcı dosya seçtiğinde çalış.
+    <script>
+        //<input id="pdfInput"> elementini JavaScript'e tanıtıyor.
 
-            pdfInput.addEventListener("change", function() {
-
-                if (pdfInput.files.length > 0) {
-
-                    uploadButton.classList.remove("error");
-                    uploadButton.classList.add("ready"); //butona ready class'ı ekliyor. yeşil 
-
-                    uploadMessage.classList.remove("error");
-                    uploadMessage.classList.add("success");
-
-                    uploadMessage.textContent =
-                        "PDF seçildi. Yüklemeye hazırsınız.";
-
-                }
-
-            });
+        const pdfInput = document.getElementById("pdfInput");
+        const uploadButton = document.getElementById("uploadButton");
+        const uploadMessage = document.getElementById("uploadMessage");
 
 
-            // Kullanıcı dosya seçmeden PDF YÜKLE butonuna bastığında
+        // Kullanıcı PDF seçtiğinde . //* change = kullanıcı dosya seçtiğinde çalış.
 
-            uploadButton.addEventListener("click", function(event) {
+        pdfInput.addEventListener("change", function() {
 
-                if (pdfInput.files.length === 0) {
+            if (pdfInput.files.length > 0) {
 
-                    event.preventDefault(); //formun gönderilmesini engelliyor.
+                uploadButton.classList.remove("error");
+                uploadButton.classList.add("ready"); //butona ready class'ı ekliyor. yeşil 
 
-                    uploadButton.classList.remove("ready");
-                    uploadButton.classList.add("error"); //* butona error class'ı ekliyor. kırmızı
+                uploadMessage.classList.remove("error");
+                uploadMessage.classList.add("success");
 
-                    uploadMessage.classList.remove("success");
-                    uploadMessage.classList.add("error");
+                uploadMessage.textContent =
+                    "PDF seçildi. Yüklemeye hazırsınız.";
 
-                    uploadMessage.textContent =
-                        "Lütfen önce bir PDF dosyası seçin.";
+            }
 
-                }
+        });
 
-            });
-        </script>
+
+        // Kullanıcı dosya seçmeden PDF YÜKLE butonuna bastığında
+
+        uploadButton.addEventListener("click", function(event) {
+
+            if (pdfInput.files.length === 0) {
+
+                event.preventDefault(); //formun gönderilmesini engelliyor.
+
+                uploadButton.classList.remove("ready");
+                uploadButton.classList.add("error"); //* butona error class'ı ekliyor. kırmızı
+
+                uploadMessage.classList.remove("success");
+                uploadMessage.classList.add("error");
+
+                uploadMessage.textContent =
+                    "Lütfen önce bir PDF dosyası seçin.";
+
+            }
+
+        });
+    </script>
 
 
 

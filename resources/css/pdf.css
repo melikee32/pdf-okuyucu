@@ -198,3 +198,20 @@ button {
     margin-top: 15px;       /*üst boşluk*/
     line-height: 1.6;
 }
+
+.question-box {
+    background: #f5f7f2;
+    border-left: 4px solid #6f8068;
+    padding: 14px 18px;
+    margin: 15px 0 20px;
+    border-radius: 10px;
+}
+
+.question-box strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.question-box p {
+    margin: 0;
+}
