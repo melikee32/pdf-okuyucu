@@ -1,103 +1,252 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Geçmiş — PDF Okuyucu</title>
+
     @vite('resources/css/pdf.css')
 </head>
+
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <span class="navbar-brand">📚 PDF Okuyucu</span>
-        <div class="navbar-links">
-            <a href="/">Ana Sayfa</a>
-            <a href="/gecmis" class="active">Geçmiş</a>
-            <form action="/logout" method="POST" style="display:inline;">
-                @csrf
-                <button type="submit" class="logout-btn">Çıkış</button>
-            </form>
+        <!-- =====================================================
+             NAVBAR
+             ===================================================== -->
+        <nav class="navbar">
+
+            <span class="navbar-brand">
+                📚 PDF Okuyucu
+            </span>
+
+            <div class="navbar-links">
+
+                <a href="/">
+                    Ana Sayfa
+                </a>
+
+                <a href="/gecmis" class="active">
+                    Geçmiş
+                </a>
+
+                <form action="/logout" method="POST" style="display:inline;">
+                    @csrf
+
+                    <button type="submit" class="logout-btn">
+                        Çıkış
+                    </button>
+                </form>
+
+            </div>
+
+        </nav>
+
+
+        <!-- =====================================================
+             SAYFA BAŞLIĞI
+             ===================================================== -->
+        <div class="header" style="margin-top:10px;">
+
+            <h1>
+                🕓 Soru Geçmişi
+            </h1>
+
+            <p>
+                Daha önce sorduğunuz sorular ve AI cevapları
+            </p>
+
         </div>
-    </nav>
 
-    <div class="header" style="margin-top:10px;">
-        <h1>🕓 Soru Geçmişi</h1>
-        <p>Daha önce sorduğunuz sorular ve AI cevapları</p>
+
+        <!-- =====================================================
+             GEÇMİŞ BOŞSA
+             ===================================================== -->
+        @if($sorular->isEmpty())
+
+            <div class="card" style="text-align:center; padding:40px;">
+
+                <p style="color:#7A8494; margin-bottom:16px;">
+                    Henüz soru sormadınız.
+                </p>
+
+                <a href="/" style="color:#687F96; font-weight:600; text-decoration:none;">
+                    ← PDF Yükle ve Soru Sor
+                </a>
+
+            </div>
+
+        @else
+
+
+            <!-- =================================================
+                 GÜNLERE GÖRE SORULAR
+                 ================================================= -->
+            @foreach($sorular as $tarih => $gunSorular)
+
+                <!-- HER GÜNÜN KENDİ GRUBU -->
+                <div class="gun-grup">
+
+
+                    <!-- =================================================
+                         GÜN BAŞLIĞI
+                         ================================================= -->
+                    <div class="gun-baslik" onclick="toggleGun(this)">
+
+                        <span class="gun-label">
+                            📅 {{ $tarih }}
+                        </span>
+
+                        <div class="gun-cizgi"></div>
+
+                        <span class="gun-sayi">
+                            {{ $gunSorular->count() }} soru
+                        </span>
+
+                        <span class="gun-ok">
+                            ▼
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         O GÜNE AİT SORULAR
+                         ================================================= -->
+                    <div class="gun-sorular">
+
+                        @foreach($gunSorular as $soru)
+
+                            <!-- SORU KARTI -->
+                            <div class="gecmis-kart"
+                                 onclick="toggleCevap({{ $soru->id }})">
+
+
+                                <!-- PDF ADI + SAAT -->
+                                <div class="gecmis-kart-ust">
+
+                                    <span class="gecmis-pdf-adi">
+                                        📄 {{ $soru->pdf->dosya_adi ?? '—' }}
+                                    </span>
+
+                                    <span class="gecmis-saat">
+                                        {{ $soru->created_at->format('H:i') }}
+                                    </span>
+
+                                </div>
+
+
+                                <!-- SORU -->
+                                <p class="gecmis-soru">
+                                    {{ $soru->soru }}
+                                </p>
+
+
+                                <!-- CEVAP TOGGLE -->
+                                <div class="gecmis-toggle"
+                                     id="toggle-{{ $soru->id }}">
+
+                                    <span>
+                                        ▼ Cevabı gör
+                                    </span>
+
+                                </div>
+
+
+                                <!-- CEVAP -->
+                                <div class="gecmis-cevap"
+                                     id="cevap-{{ $soru->id }}">
+
+                                    <div class="gecmis-cevap-ic">
+                                        {{ $soru->cevap }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+            @endforeach
+
+        @endif
+
     </div>
 
 
-    @if($sorular->isEmpty())
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
 
-    <div class="card" style="text-align:center; padding:40px;">
-        <p style="color:#7A8494; margin-bottom:16px;">Henüz soru sormadınız.</p>
-        <a href="/" style="color:#687F96; font-weight:600; text-decoration:none;">← PDF Yükle ve Soru Sor</a>
-    </div>
+    <script>
 
-    @else
+        /* =========================================================
+           SORU CEVABINI AÇ / KAPAT
+           ========================================================= */
+        function toggleCevap(id) {
 
-    @foreach($sorular as $tarih => $gunSorular)
+            const cevap = document.getElementById('cevap-' + id);
+            const toggle = document.getElementById('toggle-' + id);
 
-    <!-- GÜN BAŞLIĞI -->
-    <div class="gun-baslik">
-        <span class="gun-label">📅 {{ $tarih }}</span>
-        <div class="gun-cizgi"></div>
-        <span class="gun-sayi">{{ $gunSorular->count() }} soru</span>
-    </div>
-
-    <!-- O GÜNE AİT SORULAR -->
-    @foreach($gunSorular as $i => $soru)
-
-    <div class="gecmis-kart" onclick="toggleCevap({{ $soru->id }})">
-
-        <!-- ÜST SATIR: pdf adı + saat -->
-        <div class="gecmis-kart-ust">
-            <span class="gecmis-pdf-adi">📄 {{ $soru->pdf->dosya_adi ?? '—' }}</span>
-            <span class="gecmis-saat">{{ $soru->created_at->format('H:i') }}</span>
-        </div>
-
-        <!-- SORU METNİ -->
-        <p class="gecmis-soru">{{ $soru->soru }}</p>
-
-        <!-- AÇMA BUTONU -->
-        <div class="gecmis-toggle" id="toggle-{{ $soru->id }}">
-            <span>▼ Cevabı gör</span>
-        </div>
-
-        <!-- CEVAP (gizli, tıklayınca açılır) -->
-        <div class="gecmis-cevap" id="cevap-{{ $soru->id }}">
-            <div class="gecmis-cevap-ic">{{ $soru->cevap }}</div>
-        </div>
-
-    </div>
-
-    @endforeach
-
-    @endforeach
-
-    @endif
-
-</div>
+            const acik = cevap.classList.contains('acik');
 
 
-<script>
-    function toggleCevap(id) {
-        const cevap  = document.getElementById('cevap-' + id);
-        const toggle = document.getElementById('toggle-' + id);
+            if (acik) {
 
-        const acik = cevap.classList.contains('acik');
+                cevap.classList.remove('acik');
 
-        if (acik) {
-            cevap.classList.remove('acik');
-            toggle.innerHTML = '<span>▼ Cevabı gör</span>';
-        } else {
-            cevap.classList.add('acik');
-            toggle.innerHTML = '<span>▲ Kapat</span>';
+                toggle.innerHTML = '<span>▼ Cevabı gör</span>';
+
+            } else {
+
+                cevap.classList.add('acik');
+
+                toggle.innerHTML = '<span>▲ Kapat</span>';
+
+            }
+
         }
-    }
-</script>
+
+
+        /* =========================================================
+           GÜNÜ AÇ / KAPAT
+           ========================================================= */
+        function toggleGun(baslik) {
+
+            // Sadece tıklanan günün başlığını değiştir
+            baslik.classList.toggle('kapali');
+
+
+            // Tıklanan başlığın bulunduğu gün grubunu bul
+            const grup = baslik.closest('.gun-grup');
+
+            if (!grup) {
+                return;
+            }
+
+
+            // SADECE BU GÜNE AİT soruları bul
+            const sorular = grup.querySelector('.gun-sorular');
+
+            if (!sorular) {
+                return;
+            }
+
+
+            // Bu günün sorularını aç / kapat
+            sorular.classList.toggle('kapali');
+
+        }
+
+    </script>
 
 </body>
+
 </html>

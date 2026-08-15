@@ -13,14 +13,18 @@
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     min-height: 100vh;
-
-    /* Açık ve modern arka plan */
-    background: linear-gradient(135deg, #f8fafc, #eef2f7, #f5f7fa);
-
+    /*
+       Soft pastel 3'lü geçiş:
+       Mavi + Mor + Yeşil/Gri
+    */
+    background:
+        radial-gradient(circle at 15% 20%, rgba(189, 209, 240, 0.55), transparent 35%),
+        radial-gradient(circle at 85% 25%, rgba(226, 206, 246, 0.5), transparent 35%),
+        radial-gradient(circle at 50% 90%, rgba(184, 238, 217, 0.45), transparent 40%),
+        linear-gradient(135deg, #eef2f6 0%, #f4f1f5 50%, #edf2f1 100%);
     background-attachment: fixed;
     padding: 30px 20px;
-
-    color: #2f3542;
+    color: #3f4854;
 }
 
 /* ============================================================
@@ -38,17 +42,15 @@ body {
     text-align: center;
     margin-bottom: 24px;
 }
-
 .header h1 {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #2f3542;
+    color: #3f4854;
     letter-spacing: 0.5px;
     margin-bottom: 6px;
 }
-
 .header p {
-    color: #8b95a5;
+    color: #87919d;
     font-size: 0.9rem;
 }
 
@@ -60,153 +62,115 @@ body {
     align-items: center;
     justify-content: center;
     gap: 12px;
-
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(255, 255, 255, 0.95);
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 50px;
     padding: 10px 22px;
-
     margin-bottom: 28px;
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
-
-    box-shadow: 0 8px 25px rgba(45, 55, 72, 0.07);
+    box-shadow: 0 8px 25px rgba(75, 85, 100, 0.06), 0 2px 8px rgba(75, 85, 100, 0.03);
 }
-
 .active-doc-bar .dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-
-    background: #22c55e;
-    box-shadow: 0 0 6px rgba(34, 197, 94, 0.45);
-
+    background: #55b887;
+    box-shadow: 0 0 7px rgba(85, 184, 135, 0.35);
     flex-shrink: 0;
 }
-
 .active-doc-bar span {
     font-size: 0.875rem;
-    color: #4b5563;
+    color: #56616d;
     font-weight: 500;
 }
-
 .active-doc-bar a {
-    color: #8b95a5;
+    color: #87919d;
     font-size: 0.8rem;
     text-decoration: none;
-
-    border: 1px solid #e2e6eb;
+    border: 1px solid rgba(190, 198, 208, 0.55);
     border-radius: 20px;
-
     padding: 3px 12px;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
-
 .active-doc-bar a:hover {
-    background: #f3f5f7;
-    color: #374151;
+    background: rgba(255, 255, 255, 0.55);
+    color: #4b5563;
+    border-color: rgba(160, 170, 183, 0.65);
 }
 
 /* ============================================================
    FLASH MESAJLARI
    ============================================================ */
 .alert-info {
-    border-left: 3px solid #60a5fa;
-
-    background: #f0f7ff;
+    border-left: 3px solid #8eb7df;
+    background: rgba(224, 237, 250, 0.58);
     border-radius: 12px;
-
     padding: 14px 18px;
     margin-bottom: 20px;
-
     font-size: 0.9rem;
-    color: #3b82f6;
-
-    box-shadow: 0 5px 18px rgba(59, 130, 246, 0.06);
+    color: #547da7;
+    box-shadow: 0 5px 18px rgba(80, 120, 160, 0.05);
 }
-
 .alert-error {
-    border-left: 3px solid #ef4444;
-
-    background: #fff4f4;
+    border-left: 3px solid #d99595;
+    background: rgba(249, 232, 232, 0.62);
     border-radius: 12px;
-
     padding: 14px 18px;
     margin-bottom: 20px;
-
     font-size: 0.9rem;
-    color: #dc2626;
-
-    box-shadow: 0 5px 18px rgba(239, 68, 68, 0.06);
+    color: #a86666;
+    box-shadow: 0 5px 18px rgba(170, 100, 100, 0.05);
 }
 
 /* ============================================================
    GLASS CARD
    ============================================================ */
 .card {
-    background: rgba(255, 255, 255, 0.82);
-
-    border: 1px solid rgba(255, 255, 255, 0.95);
-
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-
     border-radius: 20px;
     padding: 28px;
-
     margin-bottom: 20px;
-
-    color: #2f3542;
-
-    box-shadow:
-        0 10px 35px rgba(45, 55, 72, 0.07),
-        0 2px 8px rgba(45, 55, 72, 0.03);
+    color: #3f4854;
+    box-shadow: 0 12px 40px rgba(75, 85, 100, 0.07), 0 3px 12px rgba(75, 85, 100, 0.035);
 }
 
 /* ============================================================
    PDF YÜKLEME KARTI
    ============================================================ */
 .upload-area {
-    border: 2px dashed #d9dee6;
-
-    border-radius: 14px;
+    border: 2px dashed rgba(160, 170, 183, 0.45);
+    border-radius: 16px;
     padding: 50px 40px;
-
     text-align: center;
-
-    background: rgba(248, 250, 252, 0.7);
-
-    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.28);
+    transition: all 0.25s ease;
 }
-
 .upload-area:hover {
-    border-color: #c5ccd6;
-    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(130, 148, 166, 0.65);
+    background: rgba(255, 255, 255, 0.42);
+    transform: translateY(-1px);
 }
-
 .upload-area h2 {
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 10px;
-
-    color: #374151;
+    color: #46515d;
 }
-
 .upload-area p {
-    color: #8b95a5;
+    color: #87919d;
     margin-bottom: 24px;
     font-size: 0.9rem;
 }
-
 input[type="file"] {
     margin-bottom: 20px;
-
-    color: #6b7280;
+    color: #68737f;
     font-size: 0.875rem;
 }
 
@@ -215,59 +179,34 @@ input[type="file"] {
    ============================================================ */
 button {
     border: none;
-
     padding: 12px 28px;
     border-radius: 10px;
-
     cursor: pointer;
-
     font-size: 0.9rem;
     font-weight: 600;
-
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
-/* İlk açılışta gri */
+/* İlk açılışta buz mavisi geçişli */
 .upload-button {
-    background: #e9edf2;
-
-    color: #4b5563;
-
-    border: 1px solid #dce1e7;
+    background: linear-gradient(110deg, rgba(180, 211, 229, 0.95) 0%, rgba(165, 196, 219, 0.95) 50%, rgba(199, 190, 220, 0.95) 100%);
+    color: #435768;
+    border: 1px solid rgba(170, 190, 207, 0.65);
+    box-shadow: 0 6px 18px rgba(125, 155, 180, 0.14);
 }
 
-/* PDF seçilince yeşil */
+/* PDF seçilince soft yeşil geçişli */
 .upload-button.ready {
-    background: #16a36a;
-    color: #fff;
+    background: linear-gradient(110deg, rgba(159, 199, 215, 0.95) 0%, rgba(126, 181, 157, 0.95) 50%, rgba(111, 163, 137, 0.95) 100%);
+    color: #ffffff;
     border: none;
+    box-shadow: 0 7px 20px rgba(91, 157, 126, 0.18);
 }
-
-/* Hata durumunda kırmızı */
 .upload-button.error {
-    background: #dc4c4c;
-    color: #fff;
+    background: linear-gradient(110deg, rgba(170, 116, 125, 0.96) 0%, rgba(191, 125, 133, 0.96) 50%, rgba(211, 157, 161, 0.96) 100%);
+    color: #ffffff;
     border: none;
-}
-
-.upload-button:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-}
-
-.upload-message {
-    margin-top: 12px;
-
-    font-size: 0.875rem;
-    min-height: 20px;
-}
-
-.upload-message.success {
-    color: #16a36a;
-}
-
-.upload-message.error {
-    color: #dc4c4c;
+    box-shadow: 0 7px 20px rgba(165, 105, 115, 0.18);
 }
 
 /* ============================================================
@@ -275,11 +214,8 @@ button {
    ============================================================ */
 .pdf-layout {
     display: grid;
-
-    grid-template-columns: 260px 1fr;
-
-    gap: 20px;
-
+    grid-template-columns: minmax(200px, 1fr) minmax(0px, 2fr);
+    gap: 30px;
     align-items: start;
 }
 
@@ -288,74 +224,45 @@ button {
    ============================================================ */
 .pdf-sidebar h2 {
     font-size: 0.8rem;
-
     font-weight: 600;
-
     text-transform: uppercase;
-
     letter-spacing: 1px;
-
-    color: #9aa3af;
-
+    color: #929ca7;
     margin-bottom: 16px;
 }
-
 .pdf-file {
     display: flex;
-
     flex-direction: column;
-
     gap: 12px;
 }
-
 .pdf-info {
     display: flex;
-
     align-items: flex-start;
-
     gap: 10px;
 }
-
 .upload-text {
-    color: #26875d;
-
+    color: #478c6c;
     font-weight: 600;
-
     font-size: 0.875rem;
-
     font-family: 'Segoe UI', sans-serif;
-
     line-height: 1.5;
-
     word-break: break-all;
 }
-
 .clear-pdf {
     display: inline-block;
-
-    color: #9aa3af;
-
+    color: #909aa5;
     text-decoration: none;
-
     font-size: 0.8rem;
-
-    border: 1px solid #e1e5ea;
-
+    border: 1px solid rgba(190, 198, 208, 0.55);
     border-radius: 20px;
-
     padding: 4px 14px;
-
-    transition: all 0.2s;
-
+    transition: all 0.2s ease;
     width: fit-content;
 }
-
 .clear-pdf:hover {
-    color: #dc4c4c;
-
-    border-color: #f0b5b5;
-
-    background: #fff5f5;
+    color: #b65f5f;
+    border-color: rgba(220, 170, 170, 0.65);
+    background: rgba(249, 232, 232, 0.45);
 }
 
 /* ============================================================
@@ -363,9 +270,7 @@ button {
    ============================================================ */
 .pdf-main {
     display: flex;
-
     flex-direction: column;
-
     gap: 20px;
 }
 
@@ -373,71 +278,50 @@ button {
    SORU SORMA ALANI
    ============================================================ */
 .question-area h2 {
-    font-size: 0.95rem;
-
-    font-weight: 600;
-
-    color: #4b5563;
-
-    margin-bottom: 14px;
-}
-
-.question-area textarea {
-    width: 100%;
-
-    min-height: 100px;
-
-    resize: vertical;
-
-    padding: 14px 16px;
-
-    background: #f8fafc;
-
-    border: 1px solid #e1e5ea;
-
-    border-radius: 12px;
-
     font-size: 0.9rem;
-
-    color: #374151;
-
-    margin-bottom: 14px;
-
+    font-weight: 600;
+    color: #56616d;
+    margin-bottom: 15px;
+}
+.question-area textarea {
+    overflow-y: auto;
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(190, 198, 208, 0.55);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #3f4854;
+    margin-bottom: 15px;
     outline: none;
-
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
-
 .question-area textarea::placeholder {
-    color: #a8b0bb;
+    font-size: medium;
+    color: #a0a9b3;
 }
-
 .question-area textarea:focus {
-    border-color: #b9c2ce;
-
-    background: #fff;
-
-    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.08);
+    border-color: rgba(130, 148, 166, 0.65);
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 0 0 3px rgba(130, 148, 166, 0.10);
 }
-
 .question-button {
-    background: #eef1f4;
-
-    color: #4b5563;
-
-    border: 1px solid #dce1e7;
-
-    padding: 10px 26px;
-
+    background: linear-gradient(110deg, rgba(188, 215, 229, 0.92) 0%, rgba(199, 193, 220, 0.92) 50%, rgba(180, 193, 207, 0.92) 100%);
+    color: #4d5d6d;
+    border: 1px solid rgba(170, 190, 207, 0.60);
+    padding: px 16px;
     border-radius: 10px;
-
-    font-size: 0.875rem;
+    font-size: 0.8rem;
+    box-shadow: 0 5px 16px rgba(110, 135, 155, 0.10);
+    transition: all 0.2s ease;
 }
-
 .question-button:hover {
-    background: #e3e7ec;
-
-    color: #374151;
+    background: linear-gradient(110deg, rgba(176, 207, 224, 0.98) 0%, rgba(190, 182, 214, 0.98) 50%, rgba(169, 184, 201, 0.98) 100%);
+    color: #3f5060;
+    transform: translateY(-1px);
+    box-shadow: 0 7px 20px rgba(100, 125, 145, 0.15);
 }
 
 /* ============================================================
@@ -445,85 +329,68 @@ button {
    ============================================================ */
 .card h2 {
     font-size: 0.95rem;
-
     font-weight: 600;
-
-    color: #4b5563;
-
-    margin-bottom: 16px;
+    color: #56616d;
+    margin-bottom: 15px;
 }
 
+/* ============================================================
+   SORU KUTUSU
+   ============================================================ */
 .question-box {
-    background: #f7f8fa;
-
-    border-left: 3px solid #cbd2da;
-
-    padding: 12px 16px;
-
+    background: linear-gradient(110deg, rgba(218, 232, 241, 0.62) 0%, rgba(224, 232, 240, 0.52) 50%, rgba(228, 223, 238, 0.48) 100%);
+    border-left: 3px solid rgba(126, 166, 195, 0.82);
+    padding: 10px 8px;
     border-radius: 10px;
-
-    margin-bottom: 16px;
-
-    font-size: 0.875rem;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 14px rgba(105, 140, 165, 0.06);
 }
-
 .question-box strong {
     display: block;
-
-    margin-bottom: 5px;
-
-    color: #9aa3af;
-
+    color: #7187a0;
     font-size: 0.8rem;
-
     text-transform: uppercase;
-
     letter-spacing: 0.5px;
 }
-
 .question-box p {
     margin: 0;
-
-    color: #4b5563;
+    font-size: 0.rem;
+    color: #526f88;
 }
 
+/* ============================================================
+   AI CEVAP KUTUSU
+   ============================================================ */
 .answer-box {
-    background: #f8fafc;
-
+    max-height: 300px;
+    overflow: auto;
+    background: linear-gradient(
+        110deg,
+        rgba(224, 238, 232, 0.56) 0%,
+        rgba(232, 240, 235, 0.48) 50%,
+        rgba(229, 237, 234, 0.44) 100%
+    );
     border-radius: 10px;
-
-    padding: 16px;
-
+    padding: 12px;
     font-size: 0.9rem;
-
-    line-height: 1.7;
-
-    border: 1px solid #edf0f3;
+    line-height: 1.2;
+    border: 1px solid rgba(188, 210, 199, 0.58);
+    border-left: 3px solid rgba(126, 195, 158, 0.82);
+    box-shadow: 0 4px 14px rgba(91, 145, 115, 0.05);
 }
-
 .answer-box strong {
     display: block;
-
-    margin-bottom: 10px;
-
-    color: #9aa3af;
-
-    font-size: 0.8rem;
-
+    margin-bottom: 15px;
+    color: #6f9582;
     text-transform: uppercase;
-
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
-
 .answer-box p {
-    color: #9aa3af;
-
+    color: #80928a;
     font-style: italic;
 }
-
 .ai-answer {
-    color: #4b5563;
-
+    color: #536960;
     white-space: pre-wrap;
 }
 
@@ -532,130 +399,80 @@ button {
    ============================================================ */
 .navbar {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
-    background: rgba(255, 255, 255, 0.82);
-
-    border: 1px solid rgba(255, 255, 255, 0.95);
-
-    backdrop-filter: blur(14px);
-
-    -webkit-backdrop-filter: blur(14px);
-
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 14px;
-
     padding: 12px 22px;
-
     margin-bottom: 24px;
-
-    box-shadow: 0 8px 25px rgba(45, 55, 72, 0.06);
+    box-shadow: 0 8px 25px rgba(75, 85, 100, 0.06);
 }
-
 .navbar-brand {
     font-size: 1rem;
-
     font-weight: 700;
-
-    color: #2f3542;
-
+    color: #3f4854;
     letter-spacing: 0.5px;
 }
-
 .navbar-links {
     display: flex;
-
     align-items: center;
-
     gap: 20px;
 }
-
 .navbar-links a {
     font-size: 0.875rem;
-
-    color: #6b7280;
-
+    color: #717c88;
     text-decoration: none;
-
     font-weight: 500;
-
-    transition: color 0.2s;
+    transition: color 0.2s ease;
 }
-
 .navbar-links a:hover,
 .navbar-links a.active {
-    color: #2f3542;
-
+    color: #3f4854;
     font-weight: 700;
 }
-
 .logout-btn {
-    background: #fff3f3;
-
-    color: #c24145;
-
-    border: 1px solid #f2cccc;
-
+    background: rgba(249, 232, 232, 0.58);
+    color: #b45f63;
+    border: 1px solid rgba(230, 190, 190, 0.60);
     padding: 6px 16px;
-
     border-radius: 8px;
-
     font-size: 0.875rem;
-
     font-weight: 600;
-
     cursor: pointer;
-
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
-
 .logout-btn:hover {
-    background: #ffe7e7;
+    background: rgba(249, 220, 220, 0.72);
 }
 
 /* ============================================================
    GEÇMİŞ SAYFASI
    ============================================================ */
-
 .gun-baslik {
     display: flex;
-
     align-items: center;
-
     gap: 12px;
-
     margin: 28px 0 10px;
 }
-
 .gun-label {
     font-size: 0.78rem;
-
     font-weight: 700;
-
-    color: #7b818a;
-
+    color: #7d8792;
     text-transform: uppercase;
-
     letter-spacing: 1px;
-
     white-space: nowrap;
 }
-
 .gun-cizgi {
     flex: 1;
-
     height: 1px;
-
-    background: #e1e5ea;
+    background: rgba(190, 198, 208, 0.55);
 }
-
 .gun-sayi {
     font-size: 0.75rem;
-
-    color: #a1a8b2;
-
+    color: #a0a9b3;
     white-space: nowrap;
 }
 
@@ -663,33 +480,84 @@ button {
    GEÇMİŞ KART
    ============================================================ */
 .gecmis-kart {
-    background: rgba(255, 255, 255, 0.82);
-
-    border: 1px solid rgba(255, 255, 255, 0.95);
-
+    background: rgba(255, 255, 255, 0.52);
+    border: 1px solid rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(14px);
-
     -webkit-backdrop-filter: blur(14px);
-
     border-radius: 14px;
-
     padding: 14px 18px;
-
     margin-bottom: 8px;
-
     cursor: pointer;
-
-    transition: all 0.2s;
-
-    box-shadow: 0 5px 18px rgba(45, 55, 72, 0.04);
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 18px rgba(75, 85, 100, 0.04);
 }
 
 .gecmis-kart:hover {
-    background: #ffffff;
-
+    background: rgba(255, 255, 255, 0.68);
     transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(75, 85, 100, 0.07);
+}
 
-    box-shadow: 0 8px 22px rgba(45, 55, 72, 0.07);
+/* ============================================================
+   GÜN BAŞLIĞI
+   ============================================================ */
+
+.gun-baslik {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.gun-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #7d8792;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.gun-cizgi {
+    flex: 1;
+    height: 1px;
+    background: rgba(190, 198, 208, 0.55);
+}
+
+.gun-sayi {
+    font-size: 0.75rem;
+    color: #a0a9b3;
+    white-space: nowrap;
+}
+
+/* Açılır kapanır ok */
+.gun-ok {
+    font-size: 11px;
+    color: #89949f;
+    transition: transform 0.25s ease;
+}
+
+/* Kapanınca ok */
+.gun-baslik.kapali .gun-ok {
+    transform: rotate(-90deg);
+}
+
+/* Soruların animasyonu */
+.gun-sorular {
+    max-height: 5000px;
+    overflow: hidden;
+    opacity: 1;
+    transition:
+        max-height 0.35s ease,
+        opacity 0.25s ease;
+}
+
+/* Kapalı hali */
+.gun-sorular.kapali {
+    max-height: 0;
+    opacity: 0;
 }
 
 /* ============================================================
@@ -697,30 +565,20 @@ button {
    ============================================================ */
 .gecmis-kart-ust {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
-
 .gecmis-pdf-adi {
     font-size: 0.75rem;
-
-    color: #7b818a;
-
-    background: #f1f3f5;
-
+    color: #7b858f;
+    background: rgba(225, 231, 237, 0.58);
     padding: 2px 10px;
-
     border-radius: 20px;
 }
-
 .gecmis-saat {
     font-size: 0.75rem;
-
-    color: #a1a8b2;
+    color: #a0a9b3;
 }
 
 /* ============================================================
@@ -728,13 +586,9 @@ button {
    ============================================================ */
 .gecmis-soru {
     font-size: 0.9rem;
-
-    color: #374151;
-
+    color: #46515d;
     font-weight: 500;
-
     margin-bottom: 8px;
-
     line-height: 1.4;
 }
 
@@ -743,9 +597,7 @@ button {
    ============================================================ */
 .gecmis-toggle {
     font-size: 0.78rem;
-
-    color: #8b98a8;
-
+    color: #89949f;
     user-select: none;
 }
 
@@ -754,9 +606,7 @@ button {
    ============================================================ */
 .gecmis-cevap {
     max-height: 0;
-
     overflow: hidden;
-
     transition: max-height 0.3s ease;
 }
 
@@ -766,49 +616,286 @@ button {
 .gecmis-cevap.acik {
     max-height: 600px;
 }
-
 .gecmis-cevap-ic {
     margin-top: 12px;
-
     padding-top: 12px;
-
-    border-top: 1px solid #e5e7eb;
-
+    border-top: 1px solid rgba(225, 229, 234, 0.75);
     font-size: 0.875rem;
-
-    color: #4b5563;
-
+    color: #56616d;
     line-height: 1.7;
-
     white-space: pre-wrap;
+}
+
+/* ============================================================
+   LOGIN / AUTH
+   ============================================================ */
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 75px 20px 40px;
+}
+.auth-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+.auth-header h1 {
+    color: #3f4854;
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+.auth-header p {
+    color: #7f8995;
+    font-size: 0.95rem;
+}
+
+/* ============================================================
+   LOGIN KARTI
+   ============================================================ */
+.auth-card {
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 12px 40px rgba(75, 85, 100, 0.08), 0 3px 12px rgba(75, 85, 100, 0.035);
+}
+
+/* ============================================================
+   LOGIN ALANLARI
+   ============================================================ */
+.auth-field {
+    margin-bottom: 20px;
+}
+.auth-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #66727f;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+.auth-field input {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid rgba(190, 198, 208, 0.55);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.38);
+    color: #3f4854;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.auth-field input::placeholder {
+    color: #a0a9b3;
+}
+.auth-field input:focus {
+    background: rgba(255, 255, 255, 0.58);
+    border-color: rgba(130, 148, 166, 0.65);
+    box-shadow: 0 0 0 3px rgba(130, 148, 166, 0.10);
+}
+
+/* ============================================================
+   LOGIN BUTONU
+   ============================================================ */
+.auth-button {
+    width: 100%;
+    height: 46px;
+    margin-top: 4px;
+    border: none;
+    border-radius: 11px;
+    background: linear-gradient(110deg, rgba(180, 211, 229, 0.96) 0%, rgba(165, 196, 219, 0.96) 50%, rgba(199, 190, 220, 0.96) 100%);
+    color: #435768;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 7px 20px rgba(110, 140, 165, 0.15);
+    transition: all 0.2s ease;
+}
+.auth-button:hover {
+    background: linear-gradient(110deg, rgba(169, 203, 223, 1) 0%, rgba(153, 187, 213, 1) 50%, rgba(190, 181, 214, 1) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 9px 23px rgba(100, 130, 155, 0.20);
+}
+.auth-button:active {
+    transform: translateY(0);
+}
+
+/* ============================================================
+   KAYIT
+   ============================================================ */
+.auth-register {
+    margin-top: 20px;
+    text-align: center;
+    color: #89939d;
+    font-size: 0.875rem;
+}
+.auth-register a {
+    margin-left: 4px;
+    color: #647b90;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.auth-register a:hover {
+    color: #4f6579;
+}
+
+/* ============================================================
+   LOGIN HATA
+   ============================================================ */
+.auth-error {
+    margin-bottom: 18px;
+    padding: 11px 14px;
+    border: 1px solid rgba(220, 175, 175, 0.65);
+    border-radius: 10px;
+    background: rgba(249, 232, 232, 0.58);
+    color: #a86666;
+    font-size: 0.875rem;
+}
+.auth-error p {
+    margin: 0;
+}
+
+/* ============================================================
+   REGISTER / KAYIT
+   ============================================================ */
+.register-container {
+    padding-top: 65px;
+}
+
+/* ============================================================
+   REGISTER KART
+   ============================================================ */
+.register-card {
+    padding: 30px;
+}
+
+/* ============================================================
+   REGISTER ALANLARI
+   ============================================================ */
+.register-field {
+    margin-bottom: 16px;
+}
+.register-field-last {
+    margin-bottom: 22px;
+}
+
+/* ============================================================
+   REGISTER INPUT
+   ============================================================ */
+.register-field input,
+.register-field-last input {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid rgba(190, 198, 208, 0.55);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.38);
+    color: #3f4854;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.register-field input::placeholder,
+.register-field-last input::placeholder {
+    color: #a0a9b3;
+}
+.register-field input:focus,
+.register-field-last input:focus {
+    background: rgba(255, 255, 255, 0.58);
+    border-color: rgba(130, 148, 166, 0.65);
+    box-shadow: 0 0 0 3px rgba(130, 148, 166, 0.10);
+}
+
+/* ============================================================
+   REGISTER BUTON
+   ============================================================ */
+.register-button {
+    width: 100%;
+    height: 46px;
+    padding: 0;
+    margin-top: 0;
+}
+
+/* ============================================================
+   REGISTER HATA
+   ============================================================ */
+.register-error {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+}
+.register-error p {
+    margin: 0;
+}
+.register-error p + p {
+    margin-top: 5px;
+}
+
+/* ============================================================
+   REGISTER MOBİL
+   ============================================================ */
+@media (max-width: 480px) {
+    .register-container {
+        padding-top: 40px;
+    }
+    .register-card {
+        padding: 24px 20px;
+    }
 }
 
 /* ============================================================
    MOBİL UYUMLULUK
    ============================================================ */
 @media (max-width: 700px) {
-
     body {
         padding: 20px 14px;
     }
-
     .pdf-layout {
         grid-template-columns: 1fr;
     }
-
     .navbar {
         padding: 12px 16px;
     }
-
     .navbar-links {
         gap: 12px;
     }
-
     .card {
         padding: 20px;
     }
-
     .upload-area {
         padding: 35px 20px;
     }
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 45px 16px 30px;
+    }
+    .auth-card {
+        padding: 24px 20px;
+        border-radius: 17px;
+    }
+    .auth-header h1 {
+        font-size: 1.65rem;
+    }
+}
+
+/* ============================================================
+   SORU KARTINI BİRAZ GENİŞLET
+   ============================================================ */
+.question-area {
+    width: 100%;
+}
+.question-area textarea {
+    width: 100%;
+    max-width: 100%;
 }

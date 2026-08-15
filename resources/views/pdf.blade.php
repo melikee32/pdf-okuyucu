@@ -75,7 +75,7 @@
             <h2>💬 PDF Hakkında Soru Sor</h2>
             <form action="/soru" method="POST">
                 @csrf
-                <textarea name="soru" placeholder="PDF hakkında sorunuzu yazınız..." required></textarea>
+                <textarea name="soru" placeholder="ᯓ➤ PDF hakkında sorunuzu yazınız..." required></textarea>
                 <button type="submit" class="question-button">SOR</button>
             </form>
         </div>
@@ -86,7 +86,7 @@
 
             <div class="question-box">
                 <strong>Sorunuz</strong>
-                <p>{{ $question ?? '' }}</p>
+                <p>ᯓ➤ {{ $question ?? '' }}</p>
             </div>
 
             <div class="answer-box">
