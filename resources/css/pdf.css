@@ -36,365 +36,6 @@ body {
 }
 
 /* ============================================================
-   HEADER
-   ============================================================ */
-.header {
-    text-align: center;
-    margin-bottom: 24px;
-}
-.header h1 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #3f4854;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-}
-.header p {
-    color: #87919d;
-    font-size: 0.9rem;
-}
-
-/* ============================================================
-   AKTİF DOKÜMAN BARI
-   ============================================================ */
-.active-doc-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.78);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 50px;
-    padding: 10px 22px;
-    margin-bottom: 28px;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 8px 25px rgba(75, 85, 100, 0.06), 0 2px 8px rgba(75, 85, 100, 0.03);
-}
-.active-doc-bar .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #55b887;
-    box-shadow: 0 0 7px rgba(85, 184, 135, 0.35);
-    flex-shrink: 0;
-}
-.active-doc-bar span {
-    font-size: 0.875rem;
-    color: #56616d;
-    font-weight: 500;
-}
-.active-doc-bar a {
-    color: #87919d;
-    font-size: 0.8rem;
-    text-decoration: none;
-    border: 1px solid rgba(190, 198, 208, 0.55);
-    border-radius: 20px;
-    padding: 3px 12px;
-    transition: all 0.2s ease;
-}
-.active-doc-bar a:hover {
-    background: rgba(255, 255, 255, 0.55);
-    color: #4b5563;
-    border-color: rgba(160, 170, 183, 0.65);
-}
-
-/* ============================================================
-   FLASH MESAJLARI
-   ============================================================ */
-.alert-info {
-    border-left: 3px solid #8eb7df;
-    background: rgba(224, 237, 250, 0.58);
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-    color: #547da7;
-    box-shadow: 0 5px 18px rgba(80, 120, 160, 0.05);
-}
-.alert-error {
-    border-left: 3px solid #d99595;
-    background: rgba(249, 232, 232, 0.62);
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-    color: #a86666;
-    box-shadow: 0 5px 18px rgba(170, 100, 100, 0.05);
-}
-
-/* ============================================================
-   GLASS CARD
-   ============================================================ */
-.card {
-    background: rgba(255, 255, 255, 0.58);
-    border: 1px solid rgba(255, 255, 255, 0.78);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-radius: 20px;
-    padding: 28px;
-    margin-bottom: 20px;
-    color: #3f4854;
-    box-shadow: 0 12px 40px rgba(75, 85, 100, 0.07), 0 3px 12px rgba(75, 85, 100, 0.035);
-}
-
-/* ============================================================
-   PDF YÜKLEME KARTI
-   ============================================================ */
-.upload-area {
-    border: 2px dashed rgba(160, 170, 183, 0.45);
-    border-radius: 16px;
-    padding: 50px 40px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.28);
-    transition: all 0.25s ease;
-}
-.upload-area:hover {
-    border-color: rgba(130, 148, 166, 0.65);
-    background: rgba(255, 255, 255, 0.42);
-    transform: translateY(-1px);
-}
-.upload-area h2 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #46515d;
-}
-.upload-area p {
-    color: #87919d;
-    margin-bottom: 24px;
-    font-size: 0.9rem;
-}
-input[type="file"] {
-    margin-bottom: 20px;
-    color: #68737f;
-    font-size: 0.875rem;
-}
-
-/* ============================================================
-   BUTONLAR
-   ============================================================ */
-button {
-    border: none;
-    padding: 12px 28px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-/* İlk açılışta buz mavisi geçişli */
-.upload-button {
-    background: linear-gradient(110deg, rgba(180, 211, 229, 0.95) 0%, rgba(165, 196, 219, 0.95) 50%, rgba(199, 190, 220, 0.95) 100%);
-    color: #435768;
-    border: 1px solid rgba(170, 190, 207, 0.65);
-    box-shadow: 0 6px 18px rgba(125, 155, 180, 0.14);
-}
-
-/* PDF seçilince soft yeşil geçişli */
-.upload-button.ready {
-    background: linear-gradient(110deg, rgba(159, 199, 215, 0.95) 0%, rgba(126, 181, 157, 0.95) 50%, rgba(111, 163, 137, 0.95) 100%);
-    color: #ffffff;
-    border: none;
-    box-shadow: 0 7px 20px rgba(91, 157, 126, 0.18);
-}
-.upload-button.error {
-    background: linear-gradient(110deg, rgba(170, 116, 125, 0.96) 0%, rgba(191, 125, 133, 0.96) 50%, rgba(211, 157, 161, 0.96) 100%);
-    color: #ffffff;
-    border: none;
-    box-shadow: 0 7px 20px rgba(165, 105, 115, 0.18);
-}
-
-/* ============================================================
-   LAYOUT
-   ============================================================ */
-.pdf-layout {
-    display: grid;
-    grid-template-columns: minmax(200px, 1fr) minmax(0px, 2fr);
-    gap: 30px;
-    align-items: start;
-}
-
-/* ============================================================
-   SOL SIDEBAR
-   ============================================================ */
-.pdf-sidebar h2 {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #929ca7;
-    margin-bottom: 16px;
-}
-.pdf-file {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.pdf-info {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-}
-.upload-text {
-    color: #478c6c;
-    font-weight: 600;
-    font-size: 0.875rem;
-    font-family: 'Segoe UI', sans-serif;
-    line-height: 1.5;
-    word-break: break-all;
-}
-.clear-pdf {
-    display: inline-block;
-    color: #909aa5;
-    text-decoration: none;
-    font-size: 0.8rem;
-    border: 1px solid rgba(190, 198, 208, 0.55);
-    border-radius: 20px;
-    padding: 4px 14px;
-    transition: all 0.2s ease;
-    width: fit-content;
-}
-.clear-pdf:hover {
-    color: #b65f5f;
-    border-color: rgba(220, 170, 170, 0.65);
-    background: rgba(249, 232, 232, 0.45);
-}
-
-/* ============================================================
-   SAĞ ANA ALAN
-   ============================================================ */
-.pdf-main {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* ============================================================
-   SORU SORMA ALANI
-   ============================================================ */
-.question-area h2 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #56616d;
-    margin-bottom: 15px;
-}
-.question-area textarea {
-    overflow-y: auto;
-    width: 100%;
-    min-height: 120px;
-    resize: vertical;
-    padding: 12px 15px;
-    background: rgba(255, 255, 255, 0.42);
-    border: 1px solid rgba(190, 198, 208, 0.55);
-    border-radius: 12px;
-    font-size: 0.9rem;
-    color: #3f4854;
-    margin-bottom: 15px;
-    outline: none;
-    transition: all 0.2s ease;
-}
-.question-area textarea::placeholder {
-    font-size: medium;
-    color: #a0a9b3;
-}
-.question-area textarea:focus {
-    border-color: rgba(130, 148, 166, 0.65);
-    background: rgba(255, 255, 255, 0.62);
-    box-shadow: 0 0 0 3px rgba(130, 148, 166, 0.10);
-}
-.question-button {
-    background: linear-gradient(110deg, rgba(188, 215, 229, 0.92) 0%, rgba(199, 193, 220, 0.92) 50%, rgba(180, 193, 207, 0.92) 100%);
-    color: #4d5d6d;
-    border: 1px solid rgba(170, 190, 207, 0.60);
-    padding: px 16px;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    box-shadow: 0 5px 16px rgba(110, 135, 155, 0.10);
-    transition: all 0.2s ease;
-}
-.question-button:hover {
-    background: linear-gradient(110deg, rgba(176, 207, 224, 0.98) 0%, rgba(190, 182, 214, 0.98) 50%, rgba(169, 184, 201, 0.98) 100%);
-    color: #3f5060;
-    transform: translateY(-1px);
-    box-shadow: 0 7px 20px rgba(100, 125, 145, 0.15);
-}
-
-/* ============================================================
-   AI CEVAP ALANI
-   ============================================================ */
-.card h2 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #56616d;
-    margin-bottom: 15px;
-}
-
-/* ============================================================
-   SORU KUTUSU
-   ============================================================ */
-.question-box {
-    background: linear-gradient(110deg, rgba(218, 232, 241, 0.62) 0%, rgba(224, 232, 240, 0.52) 50%, rgba(228, 223, 238, 0.48) 100%);
-    border-left: 3px solid rgba(126, 166, 195, 0.82);
-    padding: 10px 8px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 14px rgba(105, 140, 165, 0.06);
-}
-.question-box strong {
-    display: block;
-    color: #7187a0;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.question-box p {
-    margin: 0;
-    font-size: 0.rem;
-    color: #526f88;
-}
-
-/* ============================================================
-   AI CEVAP KUTUSU
-   ============================================================ */
-.answer-box {
-    max-height: 300px;
-    overflow: auto;
-    background: linear-gradient(
-        110deg,
-        rgba(224, 238, 232, 0.56) 0%,
-        rgba(232, 240, 235, 0.48) 50%,
-        rgba(229, 237, 234, 0.44) 100%
-    );
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 0.9rem;
-    line-height: 1.2;
-    border: 1px solid rgba(188, 210, 199, 0.58);
-    border-left: 3px solid rgba(126, 195, 158, 0.82);
-    box-shadow: 0 4px 14px rgba(91, 145, 115, 0.05);
-}
-.answer-box strong {
-    display: block;
-    margin-bottom: 15px;
-    color: #6f9582;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
-.answer-box p {
-    color: #80928a;
-    font-style: italic;
-}
-.ai-answer {
-    color: #536960;
-    white-space: pre-wrap;
-}
-
-/* ============================================================
    NAVBAR
    ============================================================ */
 .navbar {
@@ -449,13 +90,777 @@ button {
 }
 
 /* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #3f4854;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+.header p {
+    color: #87919d;
+    font-size: 0.9rem;
+}
+
+/* ============================================================
+   FLASH MESAJLARI (genel / diğer sayfalar için)
+   ============================================================ */
+.alert-info {
+    border-left: 3px solid #8eb7df;
+    background: rgba(224, 237, 250, 0.58);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #547da7;
+    box-shadow: 0 5px 18px rgba(80, 120, 160, 0.05);
+}
+.alert-error {
+    border-left: 3px solid #d99595;
+    background: rgba(249, 232, 232, 0.62);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #a86666;
+    box-shadow: 0 5px 18px rgba(170, 100, 100, 0.05);
+}
+
+/* ============================================================
+   PDF SAYFASI FEEDBACK MESAJI (alert + pdf-feedback birlikte kullanılır)
+   ============================================================ */
+.pdf-feedback {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: feedbackIn 0.3s ease;
+}
+.pdf-feedback p {
+    margin: 0;
+}
+.pdf-feedback.alert-info {
+    background: rgba(224, 242, 234, 0.68);
+    border-left: 4px solid #6cb592;
+    color: #4b8067;
+}
+.pdf-feedback.alert-error {
+    background: rgba(254, 235, 235, 0.7);
+    border-left: 4px solid #e08383;
+    color: #a04e4e;
+}
+.feedback-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+@keyframes feedbackIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   AKTİF DOKÜMANLAR (çoklu PDF barı)
+   ============================================================ */
+.active-docs-wrapper {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 17px 19px;
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    border-radius: 18px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 8px 25px rgba(75, 85, 100, 0.06);
+    animation: activeDocsFade 0.25s ease;
+}
+@keyframes activeDocsFade {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.active-docs-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 13px;
+}
+.active-docs-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #46515d;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+.active-docs-title-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: linear-gradient(135deg, rgba(147, 130, 226, 0.16), rgba(86, 184, 168, 0.16));
+    font-size: 0.9rem;
+}
+.active-docs-count {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 2px;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background: rgba(230, 246, 236, 0.75);
+    border: 1px solid rgba(108, 181, 146, 0.25);
+    color: #4b8067;
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.active-docs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    width: 100%;
+}
+
+.active-doc-card {
+    min-width: 220px;
+    max-width: 330px;
+    flex: 0 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(210, 217, 225, 0.72);
+    border-radius: 12px;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.active-doc-card:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.94);
+    border-color: rgba(156, 178, 201, 0.65);
+    box-shadow: 0 5px 15px rgba(75, 85, 100, 0.07);
+}
+
+.active-doc-icon {
+    width: 31px;
+    height: 31px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(147, 130, 226, 0.16), rgba(86, 184, 168, 0.16));
+    font-size: 0.9rem;
+}
+
+/* PDF adına/ikonuna tıklanınca PDF'i yeni sekmede açan link */
+.active-doc-link {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+.active-doc-link:hover {
+    background: rgba(147, 130, 226, 0.08);
+}
+.active-doc-link:hover .active-doc-icon {
+    background: linear-gradient(135deg, rgba(147, 130, 226, 0.3), rgba(86, 184, 168, 0.3));
+}
+.active-doc-link:hover .active-doc-name {
+    color: #5b4fb0;
+}
+
+.active-doc-info {
+    flex: 1;
+    min-width: 0;
+}
+.active-doc-name {
+    display: block;
+    color: #46515d;
+    font-size: 0.79rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s ease;
+}
+.active-doc-status {
+    display: block;
+    margin-top: 2px;
+    color: #9aa3ad;
+    font-size: 0.67rem;
+}
+
+/* Kartın sağındaki görüntüle + kaldır ikon butonları */
+.active-doc-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.active-doc-view {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 7px;
+    background: rgba(224, 237, 250, 0.75);
+    color: #6a8bab;
+    font-size: 0.82rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.active-doc-view:hover {
+    background: rgba(200, 225, 245, 0.95);
+    color: #4c6f90;
+    transform: scale(1.06);
+}
+
+.remove-pdf-form {
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+}
+.active-doc-remove {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 7px;
+    background: rgba(249, 232, 232, 0.7);
+    color: #b8797d;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.active-doc-remove:hover {
+    background: rgba(245, 210, 210, 0.95);
+    color: #a04e4e;
+    transform: scale(1.06);
+}
+
+.active-doc-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(190, 198, 208, 0.28);
+}
+.active-doc-actions form {
+    margin: 0;
+}
+
+.btn-add-pdf {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 13px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(156, 178, 201, 0.55);
+    border-radius: 9px;
+    color: #52687c;
+    font-size: 0.77rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.btn-add-pdf:hover {
+    background: rgba(226, 239, 247, 0.85);
+    border-color: #9cb2c9;
+    transform: translateY(-1px);
+}
+
+.btn-change-pdf {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 13px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px dashed rgba(156, 178, 201, 0.65);
+    border-radius: 9px;
+    color: #778594;
+    text-decoration: none;
+    font-size: 0.77rem;
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.btn-change-pdf:hover {
+    background: rgba(255, 255, 255, 0.88);
+    color: #52687c;
+    border-color: #8da7be;
+    transform: translateY(-1px);
+}
+
+.no-active-docs {
+    padding: 14px;
+    background: rgba(248, 250, 252, 0.65);
+    border: 1px dashed rgba(190, 198, 208, 0.55);
+    border-radius: 11px;
+    text-align: center;
+    color: #8b96a4;
+    font-size: 0.8rem;
+}
+
+/* ============================================================
+   GLASS CARD (ortak kart görünümü)
+   ============================================================ */
+.card {
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 20px;
+    color: #3f4854;
+    box-shadow: 0 12px 40px rgba(75, 85, 100, 0.07), 0 3px 12px rgba(75, 85, 100, 0.035);
+}
+.card h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #56616d;
+    margin-bottom: 15px;
+}
+
+/* ============================================================
+   PDF YÜKLEME KARTI
+   ============================================================ */
+.upload-area {
+    border: 2px dashed rgba(160, 170, 183, 0.45);
+    border-radius: 16px;
+    padding: 50px 40px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.28);
+    transition: all 0.25s ease;
+}
+.upload-area:hover {
+    border-color: rgba(130, 148, 166, 0.65);
+    background: rgba(255, 255, 255, 0.42);
+    transform: translateY(-1px);
+}
+.upload-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.upload-icon {
+    font-size: 1.3rem;
+}
+.upload-area h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #46515d;
+    margin: 0;
+}
+.upload-description {
+    color: #87919d;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+}
+
+.upload-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.file-select-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(190, 198, 208, 0.6);
+    border-radius: 10px;
+    color: #52687c;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.file-select-button:hover {
+    background: #fff;
+    border-color: #9cb2c9;
+    transform: translateY(-1px);
+}
+
+.file-name {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: #a7afb8;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px dashed rgba(190, 198, 208, 0.5);
+    border-radius: 10px;
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.file-name.selected {
+    color: #478c6c;
+    font-weight: 600;
+    background: rgba(224, 242, 234, 0.5);
+    border-style: solid;
+    border-color: rgba(108, 181, 146, 0.35);
+}
+
+/* ============================================================
+   BUTONLAR
+   ============================================================ */
+button {
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.upload-button {
+    background: linear-gradient(110deg, #9382e2 0%, #7fa8c9 50%, #56b8a8 100%);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    box-shadow: 0 7px 20px rgba(120, 140, 200, 0.20);
+}
+.upload-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 24px rgba(120, 140, 200, 0.28);
+}
+.upload-button.ready {
+    background: linear-gradient(110deg, #7fc7a0 0%, #56b8a8 50%, #4ba98f 100%);
+    box-shadow: 0 7px 20px rgba(91, 157, 126, 0.22);
+}
+.upload-button.error {
+    background: linear-gradient(110deg, #d98a90 0%, #c96b72 100%);
+    box-shadow: 0 7px 20px rgba(180, 90, 95, 0.22);
+}
+
+.upload-message {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #8b96a4;
+    text-align: center;
+}
+.upload-message.success {
+    color: #4b8067;
+}
+.upload-message.error {
+    color: #a04e4e;
+}
+
+/* ============================================================
+   PDF LAYOUT (aktif dokümanlar üstte olduğu için tek sütun)
+   ============================================================ */
+.pdf-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ============================================================
+   SORU SORMA ALANI
+   ============================================================ */
+.question-area textarea {
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(190, 198, 208, 0.55);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #3f4854;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.question-area textarea::placeholder {
+    font-size: 0.9rem;
+    color: #a0a9b3;
+}
+.question-area textarea:focus {
+    border-color: rgba(130, 148, 166, 0.65);
+    background: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 0 0 3px rgba(130, 148, 166, 0.10);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+.form-group:last-child {
+    margin-bottom: 0;
+}
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #66727f;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.model-group {
+    margin-bottom: 22px;
+}
+
+/* AI Modeli seçici (Gemini / Grok) */
+.model-switcher {
+    display: flex;
+    gap: 10px;
+}
+.model-option {
+    flex: 1;
+    cursor: pointer;
+}
+.model-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+.model-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(190, 198, 208, 0.55);
+    background: rgba(255, 255, 255, 0.5);
+    color: #68737f;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.model-pill:hover {
+    border-color: rgba(130, 148, 166, 0.65);
+    background: rgba(255, 255, 255, 0.75);
+}
+.model-option input:checked + .model-pill {
+    background: linear-gradient(110deg, #9382e2 0%, #7fa8c9 50%, #56b8a8 100%);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 6px 16px rgba(110, 120, 180, 0.25);
+}
+.model-option input:focus-visible + .model-pill {
+    outline: 2px solid rgba(130, 148, 166, 0.65);
+    outline-offset: 2px;
+}
+
+.question-button {
+    width: 100%;
+    background: linear-gradient(110deg, #9382e2 0%, #7fa8c9 50%, #56b8a8 100%);
+    color: #ffffff;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    box-shadow: 0 7px 20px rgba(120, 140, 200, 0.22);
+    transition: all 0.2s ease;
+}
+.question-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 24px rgba(120, 140, 200, 0.30);
+}
+
+/* ============================================================
+   AI CEVAP ALANI
+   ============================================================ */
+
+/* Soru / Cevap kutularını yan yana yerleştir */
+.ai-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.ai-card-header {
+    flex-basis: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+.ai-card-header h2 {
+    margin-bottom: 0;
+}
+.ai-used-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: linear-gradient(110deg, rgba(147, 130, 226, 0.16), rgba(86, 184, 168, 0.16));
+    border: 1px solid rgba(147, 130, 226, 0.28);
+    color: #5b4fb0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+.ai-card .question-box,
+.ai-card .answer-box {
+    flex: 1 1 260px;
+    min-width: 260px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+    .ai-card .question-box,
+    .ai-card .answer-box {
+        flex-basis: 100%;
+    }
+    .ai-card-header {
+        flex-wrap: wrap;
+    }
+}
+
+.pill-title,
+.pill-title-green {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.pill-title {
+    background: rgba(224, 237, 250, 0.7);
+    color: #7187a0;
+}
+.pill-title-green {
+    background: rgba(224, 242, 234, 0.7);
+    color: #6f9582;
+}
+
+.question-box {
+    background: linear-gradient(110deg, rgba(218, 232, 241, 0.62) 0%, rgba(224, 232, 240, 0.52) 50%, rgba(228, 223, 238, 0.48) 100%);
+    border-left: 3px solid rgba(126, 166, 195, 0.82);
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 14px rgba(105, 140, 165, 0.06);
+}
+.question-box p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #526f88;
+}
+
+.answer-box {
+    max-height: 300px;
+    overflow: auto;
+    background: linear-gradient(110deg, rgba(224, 238, 232, 0.56) 0%, rgba(232, 240, 235, 0.48) 50%, rgba(229, 237, 234, 0.44) 100%);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border: 1px solid rgba(188, 210, 199, 0.58);
+    border-left: 3px solid rgba(126, 195, 158, 0.82);
+    box-shadow: 0 4px 14px rgba(91, 145, 115, 0.05);
+}
+.empty-answer {
+    margin: 0;
+    color: #80928a;
+    font-style: italic;
+    font-size: 0.88rem;
+}
+.ai-answer-text {
+    margin: 0;
+    color: #536960;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* ============================================================
    GEÇMİŞ SAYFASI
    ============================================================ */
+.gun-grup {
+    margin-bottom: 6px;
+}
 .gun-baslik {
     display: flex;
     align-items: center;
     gap: 12px;
     margin: 28px 0 10px;
+    cursor: pointer;
+    user-select: none;
 }
 .gun-label {
     font-size: 0.78rem;
@@ -475,10 +880,25 @@ button {
     color: #a0a9b3;
     white-space: nowrap;
 }
+.gun-ok {
+    font-size: 11px;
+    color: #89949f;
+    transition: transform 0.25s ease;
+}
+.gun-baslik.kapali .gun-ok {
+    transform: rotate(-90deg);
+}
+.gun-sorular {
+    max-height: 5000px;
+    overflow: hidden;
+    opacity: 1;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+.gun-sorular.kapali {
+    max-height: 0;
+    opacity: 0;
+}
 
-/* ============================================================
-   GEÇMİŞ KART
-   ============================================================ */
 .gecmis-kart {
     background: rgba(255, 255, 255, 0.52);
     border: 1px solid rgba(255, 255, 255, 0.75);
@@ -491,78 +911,35 @@ button {
     transition: all 0.2s ease;
     box-shadow: 0 5px 18px rgba(75, 85, 100, 0.04);
 }
-
 .gecmis-kart:hover {
     background: rgba(255, 255, 255, 0.68);
     transform: translateY(-1px);
     box-shadow: 0 8px 22px rgba(75, 85, 100, 0.07);
 }
 
-/* ============================================================
-   GÜN BAŞLIĞI
-   ============================================================ */
+<!-- SİL -->
+<form
+    action="{{ url('/soru-sil/' . $soru->id) }}"
+    method="POST"
+    class="soru-sil-form"
+    onclick="event.stopPropagation();"
+    onsubmit="return confirm('Bu soru geçmişten silinsin mi?');"
+>
 
-.gun-baslik {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 28px 0 10px;
-    cursor: pointer;
-    user-select: none;
-}
+    @csrf
+    @method('DELETE')
 
-.gun-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #7d8792;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    white-space: nowrap;
-}
+    <button
+        type="submit"
+        class="soru-sil-btn"
+        title="Bu soruyu sil"
+    >
+        🗑
+    </button>
 
-.gun-cizgi {
-    flex: 1;
-    height: 1px;
-    background: rgba(190, 198, 208, 0.55);
-}
+</form>
 
-.gun-sayi {
-    font-size: 0.75rem;
-    color: #a0a9b3;
-    white-space: nowrap;
-}
 
-/* Açılır kapanır ok */
-.gun-ok {
-    font-size: 11px;
-    color: #89949f;
-    transition: transform 0.25s ease;
-}
-
-/* Kapanınca ok */
-.gun-baslik.kapali .gun-ok {
-    transform: rotate(-90deg);
-}
-
-/* Soruların animasyonu */
-.gun-sorular {
-    max-height: 5000px;
-    overflow: hidden;
-    opacity: 1;
-    transition:
-        max-height 0.35s ease,
-        opacity 0.25s ease;
-}
-
-/* Kapalı hali */
-.gun-sorular.kapali {
-    max-height: 0;
-    opacity: 0;
-}
-
-/* ============================================================
-   ÜST SATIR
-   ============================================================ */
 .gecmis-kart-ust {
     display: flex;
     justify-content: space-between;
@@ -580,10 +957,6 @@ button {
     font-size: 0.75rem;
     color: #a0a9b3;
 }
-
-/* ============================================================
-   SORU METNİ
-   ============================================================ */
 .gecmis-soru {
     font-size: 0.9rem;
     color: #46515d;
@@ -591,28 +964,16 @@ button {
     margin-bottom: 8px;
     line-height: 1.4;
 }
-
-/* ============================================================
-   TOGGLE BUTONU
-   ============================================================ */
 .gecmis-toggle {
     font-size: 0.78rem;
     color: #89949f;
     user-select: none;
 }
-
-/* ============================================================
-   CEVAP — KAPALI
-   ============================================================ */
 .gecmis-cevap {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
 }
-
-/* ============================================================
-   CEVAP — AÇIK
-   ============================================================ */
 .gecmis-cevap.acik {
     max-height: 600px;
 }
@@ -650,10 +1011,6 @@ button {
     color: #7f8995;
     font-size: 0.95rem;
 }
-
-/* ============================================================
-   LOGIN KARTI
-   ============================================================ */
 .auth-card {
     background: rgba(255, 255, 255, 0.58);
     border: 1px solid rgba(255, 255, 255, 0.78);
@@ -663,10 +1020,6 @@ button {
     -webkit-backdrop-filter: blur(18px);
     box-shadow: 0 12px 40px rgba(75, 85, 100, 0.08), 0 3px 12px rgba(75, 85, 100, 0.035);
 }
-
-/* ============================================================
-   LOGIN ALANLARI
-   ============================================================ */
 .auth-field {
     margin-bottom: 20px;
 }
@@ -700,10 +1053,6 @@ button {
     border-color: rgba(130, 148, 166, 0.65);
     box-shadow: 0 0 0 3px rgba(130, 148, 166, 0.10);
 }
-
-/* ============================================================
-   LOGIN BUTONU
-   ============================================================ */
 .auth-button {
     width: 100%;
     height: 46px;
@@ -727,10 +1076,6 @@ button {
 .auth-button:active {
     transform: translateY(0);
 }
-
-/* ============================================================
-   KAYIT
-   ============================================================ */
 .auth-register {
     margin-top: 20px;
     text-align: center;
@@ -747,10 +1092,6 @@ button {
 .auth-register a:hover {
     color: #4f6579;
 }
-
-/* ============================================================
-   LOGIN HATA
-   ============================================================ */
 .auth-error {
     margin-bottom: 18px;
     padding: 11px 14px;
@@ -770,27 +1111,15 @@ button {
 .register-container {
     padding-top: 65px;
 }
-
-/* ============================================================
-   REGISTER KART
-   ============================================================ */
 .register-card {
     padding: 30px;
 }
-
-/* ============================================================
-   REGISTER ALANLARI
-   ============================================================ */
 .register-field {
     margin-bottom: 16px;
 }
 .register-field-last {
     margin-bottom: 22px;
 }
-
-/* ============================================================
-   REGISTER INPUT
-   ============================================================ */
 .register-field input,
 .register-field-last input {
     width: 100%;
@@ -815,20 +1144,12 @@ button {
     border-color: rgba(130, 148, 166, 0.65);
     box-shadow: 0 0 0 3px rgba(130, 148, 166, 0.10);
 }
-
-/* ============================================================
-   REGISTER BUTON
-   ============================================================ */
 .register-button {
     width: 100%;
     height: 46px;
     padding: 0;
     margin-top: 0;
 }
-
-/* ============================================================
-   REGISTER HATA
-   ============================================================ */
 .register-error {
     margin-bottom: 18px;
     padding: 12px 14px;
@@ -841,26 +1162,11 @@ button {
 }
 
 /* ============================================================
-   REGISTER MOBİL
-   ============================================================ */
-@media (max-width: 480px) {
-    .register-container {
-        padding-top: 40px;
-    }
-    .register-card {
-        padding: 24px 20px;
-    }
-}
-
-/* ============================================================
    MOBİL UYUMLULUK
    ============================================================ */
 @media (max-width: 700px) {
     body {
         padding: 20px 14px;
-    }
-    .pdf-layout {
-        grid-template-columns: 1fr;
     }
     .navbar {
         padding: 12px 16px;
@@ -873,6 +1179,40 @@ button {
     }
     .upload-area {
         padding: 35px 20px;
+    }
+    .upload-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .file-name {
+        max-width: none;
+        text-align: center;
+    }
+    .model-switcher {
+        flex-direction: column;
+    }
+
+    .active-docs-header {
+        align-items: flex-start;
+    }
+    .active-docs-list {
+        flex-direction: column;
+    }
+    .active-doc-card {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+    .active-doc-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .active-doc-actions form {
+        width: 100%;
+    }
+    .btn-add-pdf,
+    .btn-change-pdf {
+        width: 100%;
     }
 }
 
@@ -887,15 +1227,87 @@ button {
     .auth-header h1 {
         font-size: 1.65rem;
     }
+    .register-container {
+        padding-top: 40px;
+    }
+    .register-card {
+        padding: 24px 20px;
+    }
 }
 
 /* ============================================================
-   SORU KARTINI BİRAZ GENİŞLET
+   SORU YÜKLENİYOR OVERLAY'İ
    ============================================================ */
-.question-area {
-    width: 100%;
+.soru-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(238, 242, 246, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
-.question-area textarea {
+.soru-loading-overlay.visible {
+    display: flex;
+}
+
+.soru-loading-box {
     width: 100%;
-    max-width: 100%;
+    max-width: 360px;
+    margin: 0 20px;
+    padding: 32px 28px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 20px 55px rgba(75, 85, 100, 0.16);
+    text-align: center;
+}
+
+.soru-loading-spinner {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    border: 3px solid rgba(147, 130, 226, 0.18);
+    border-top-color: #9382e2;
+    animation: soruSpin 0.85s linear infinite;
+}
+@keyframes soruSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.soru-loading-text {
+    color: #46515d;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    min-height: 1.3em;
+}
+
+.soru-loading-bar-track {
+    width: 100%;
+    height: 7px;
+    border-radius: 20px;
+    background: rgba(190, 198, 208, 0.35);
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.soru-loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    background: linear-gradient(110deg, #9382e2 0%, #7fa8c9 50%, #56b8a8 100%);
+    transition: width 0.25s ease;
+}
+
+.soru-loading-hint {
+    color: #9aa3ad;
+    font-size: 0.75rem;
+    line-height: 1.5;
 }
