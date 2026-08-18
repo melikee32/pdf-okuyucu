@@ -51,4 +51,12 @@ return [
         'llm_model' => env('OLLAMA_LLM_MODEL'),
     ],
 
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+    ],
+
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+    ],
+
 ];
