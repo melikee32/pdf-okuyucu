@@ -28,7 +28,7 @@
             @csrf
 
             <div class="auth-field">
-                <label for="email">E-posta</label>
+                <label for="email">E-posta 🖂</label>
 
                 <input
                     id="email"
@@ -41,7 +41,7 @@
             </div>
 
             <div class="auth-field">
-                <label for="password">Şifre</label>
+                <label for="password">Şifre  &nbsp;🗝</label>
 
                 <input
                     id="password"
@@ -53,7 +53,7 @@
             </div>
 
             <button type="submit" class="auth-button">
-                Giriş Yap
+               ✿ Giriş Yap
             </button>
 
         </form>

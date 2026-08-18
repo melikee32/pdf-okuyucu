@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 
@@ -29,18 +30,18 @@
         <div class="navbar-links">
 
             <a href="/">
-                Ana Sayfa
+                ⌂ Ana Sayfa
             </a>
 
             <a href="/gecmis">
-                Geçmiş
+                 ↻ Geçmiş
             </a>
 
             <form action="/logout" method="POST" style="display:inline;">
                 @csrf
 
                 <button type="submit" class="logout-btn">
-                    Çıkış
+                    ⇾Çıkış
                 </button>
             </form>
 
@@ -742,11 +743,6 @@
 
         soruForm.addEventListener("submit", function (event) {
 
-            /*
-            | Boş soru gönderilmeye çalışılırsa (required alan) tarayıcı
-            | zaten engeller, submit event'i bu durumda tetiklenmez.
-            */
-
             const asamalar = [
                 "Sorunuz analiz ediliyor...",
                 "PDF'lerde ilgili bölümler aranıyor...",
@@ -761,13 +757,6 @@
 
             soruLoadingOverlay.classList.add("visible");
 
-
-            /*
-            | Gerçek backend ilerlemesi bilinmediği için (tek senkron
-            | istek), çubuğu hızlı başlatıp gittikçe yavaşlatarak
-            | %90'a kadar dolduruyoruz; gerçek cevap gelince sayfa zaten
-            | yenilenip overlay'i baştan kaldıracak.
-            */
 
             let yuzde = 0;
 
@@ -795,12 +784,6 @@
 
             }, 3200);
 
-
-            /*
-            | Sayfa zaten form submit sonrası yenileneceği için timer'ları
-            | elle temizlemeye gerek yok, ama olur da form iptal edilirse
-            | (ör. tarayıcı geri tuşu) diye referansları saklıyoruz.
-            */
 
             soruForm.dataset.timers = "active";
 

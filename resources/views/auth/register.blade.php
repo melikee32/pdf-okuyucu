@@ -30,7 +30,7 @@
             @csrf
 
             <div class="auth-field register-field">
-                <label for="name">Ad Soyad</label>
+                <label for="name">Ad Soyad 𐀪</label>
 
                 <input
                     id="name"
@@ -43,7 +43,7 @@
             </div>
 
             <div class="auth-field register-field">
-                <label for="email">E-posta</label>
+                <label for="email">E-posta 🖂</label>
 
                 <input
                     id="email"
@@ -56,7 +56,7 @@
             </div>
 
             <div class="auth-field register-field">
-                <label for="password">Şifre</label>
+                <label for="password">Şifre 🗝</label>
 
                 <input
                     id="password"
@@ -80,7 +80,7 @@
             </div>
 
             <button type="submit" class="auth-button register-button">
-                Kayıt Ol
+              ✿  Kayıt Ol 
             </button>
 
         </form>

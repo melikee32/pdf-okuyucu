@@ -26,18 +26,18 @@
             <div class="navbar-links">
 
                 <a href="/">
-                    Ana Sayfa
+                   ⌂ Ana Sayfa
                 </a>
 
                 <a href="/gecmis" class="active">
-                    Geçmiş
+                   ↻ Geçmiş
                 </a>
 
                 <form action="/logout" method="POST" style="display:inline;">
                     @csrf
 
                     <button type="submit" class="logout-btn">
-                        Çıkış
+                        ⇾Çıkış
                     </button>
                 </form>
 
