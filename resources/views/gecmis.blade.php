@@ -67,114 +67,139 @@
              ===================================================== -->
         @if($sorular->isEmpty())
 
-            <div class="card" style="text-align:center; padding:40px;">
+        <div class="card" style="text-align:center; padding:40px;">
 
-                <p style="color:#7A8494; margin-bottom:16px;">
-                    Henüz soru sormadınız.
-                </p>
+            <p style="color:#7A8494; margin-bottom:16px;">
+                Henüz soru sormadınız.
+            </p>
 
-                <a href="/" style="color:#687F96; font-weight:600; text-decoration:none;">
-                    ← PDF Yükle ve Soru Sor
-                </a>
+            <a href="/" style="color:#687F96; font-weight:600; text-decoration:none;">
+                ← PDF Yükle ve Soru Sor
+            </a>
 
-            </div>
+        </div>
 
         @else
 
 
-            <!-- =================================================
+        <!-- =================================================
                  GÜNLERE GÖRE SORULAR
                  ================================================= -->
-            @foreach($sorular as $tarih => $gunSorular)
+        @foreach($sorular as $tarih => $gunSorular)
 
-                <!-- HER GÜNÜN KENDİ GRUBU -->
-                <div class="gun-grup">
+        <!-- HER GÜNÜN KENDİ GRUBU -->
+        <div class="gun-grup">
 
 
-                    <!-- =================================================
+            <!-- =================================================
                          GÜN BAŞLIĞI
+                         NOT: "kapali" class'ı başta ekli — sayfa ilk
+                         açıldığında günler kapalı gelsin diye. JS
+                         (toggleGun) tıklayınca bu class'ı ekleyip
+                         çıkararak açıp kapatıyor.
                          ================================================= -->
-                    <div class="gun-baslik" onclick="toggleGun(this)">
+            <div class="gun-baslik kapali" onclick="toggleGun(this)">
 
-                        <span class="gun-label">
-                            📅 {{ $tarih }}
+                <span class="gun-label">
+                    📅 {{ $tarih }}
+                </span>
+
+                <div class="gun-cizgi"></div>
+
+                <span class="gun-sayi">
+                    {{ $gunSorular->count() }} soru
+                </span>
+
+                <span class="gun-ok">
+                    ▼
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                         O GÜNE AİT SORULAR
+                         Aynı sebeple burada da başta "kapali" var.
+                         ================================================= -->
+            <div class="gun-sorular kapali">
+
+                @foreach($gunSorular as $soru)
+
+                <!-- SORU KARTI -->
+                <div class="gecmis-kart"
+                    onclick="toggleCevap({{ $soru->id }})">
+
+
+                    <!-- PDF ADI + SAAT -->
+                    <div class="gecmis-kart-ust">
+
+                        <span class="gecmis-pdf-adi">
+                            📄 {{ $soru->pdf->dosya_adi ?? '—' }}
                         </span>
 
-                        <div class="gun-cizgi"></div>
-
-                        <span class="gun-sayi">
-                            {{ $gunSorular->count() }} soru
+                        <span class="gecmis-saat">
+                            {{ $soru->created_at->format('H:i') }}
                         </span>
 
-                        <span class="gun-ok">
-                            ▼
+                        <!-- SİL -->
+                        <form
+                            action="{{ url('/soru-sil/' . $soru->id) }}"
+                            method="POST"
+                            class="soru-sil-form"
+                            onclick="event.stopPropagation();"
+                            onsubmit="return confirm('Bu soru geçmişten silinsin mi?');">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                class="soru-sil-btn"
+                                title="Bu soruyu sil">
+                                🗑
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- SORU -->
+                    <p class="gecmis-soru">
+                        {{ $soru->soru }}
+                    </p>
+
+
+                    <!-- CEVAP TOGGLE -->
+                    <div class="gecmis-toggle"
+                        id="toggle-{{ $soru->id }}">
+
+                        <span>
+                            ▼ Cevabı gör
                         </span>
 
                     </div>
 
 
-                    <!-- =================================================
-                         O GÜNE AİT SORULAR
-                         ================================================= -->
-                    <div class="gun-sorular">
+                    <!-- CEVAP -->
+                    <div class="gecmis-cevap"
+                        id="cevap-{{ $soru->id }}">
 
-                        @foreach($gunSorular as $soru)
-
-                            <!-- SORU KARTI -->
-                            <div class="gecmis-kart"
-                                 onclick="toggleCevap({{ $soru->id }})">
-
-
-                                <!-- PDF ADI + SAAT -->
-                                <div class="gecmis-kart-ust">
-
-                                    <span class="gecmis-pdf-adi">
-                                        📄 {{ $soru->pdf->dosya_adi ?? '—' }}
-                                    </span>
-
-                                    <span class="gecmis-saat">
-                                        {{ $soru->created_at->format('H:i') }}
-                                    </span>
-
-                                </div>
-
-
-                                <!-- SORU -->
-                                <p class="gecmis-soru">
-                                    {{ $soru->soru }}
-                                </p>
-
-
-                                <!-- CEVAP TOGGLE -->
-                                <div class="gecmis-toggle"
-                                     id="toggle-{{ $soru->id }}">
-
-                                    <span>
-                                        ▼ Cevabı gör
-                                    </span>
-
-                                </div>
-
-
-                                <!-- CEVAP -->
-                                <div class="gecmis-cevap"
-                                     id="cevap-{{ $soru->id }}">
-
-                                    <div class="gecmis-cevap-ic">
-                                        {{ $soru->cevap }}
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        @endforeach
+                        <div class="gecmis-cevap-ic">
+                            {{ $soru->cevap }}
+                        </div>
 
                     </div>
 
                 </div>
 
-            @endforeach
+                @endforeach
+
+            </div>
+
+        </div>
+
+        @endforeach
 
         @endif
 
@@ -186,7 +211,6 @@
          ========================================================= -->
 
     <script>
-
         /* =========================================================
            SORU CEVABINI AÇ / KAPAT
            ========================================================= */
@@ -244,7 +268,6 @@
             sorular.classList.toggle('kapali');
 
         }
-
     </script>
 
 </body>
